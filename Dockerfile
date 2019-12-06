@@ -1,10 +1,18 @@
-FROM  mcr.microsoft.com/dotnet/core/sdk:3.1
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
+WORKDIR /app
+
+# Copy csproj and restore as distinct layers
 COPY Src Src
-COPY Makefile Makefile
-COPY helloworld.sln helloworld.sln
+COPY *.sln ./
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . ./
 RUN dotnet publish -c Release -o out
-# RUN rm -rf Src
-EXPOSE 5000
-EXPOSE 5001
-# CMD out/HelloWorld
-CMD dotnet run --project Src/HelloWorld/HelloWorld/HelloWorld.csproj
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+WORKDIR /app
+COPY --from=build-env /app/out .
+EXPOSE 80
+ENTRYPOINT ["dotnet", "HelloWorld.dll"]
