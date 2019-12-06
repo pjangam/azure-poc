@@ -11,12 +11,26 @@ build:
 		dotnet build -c Release
 
 .PHONY: test
-## Runs the unit tests.
 test:
-	dotnet test -c Release
+		dotnet test -c Release
 
 .PHONY: start
-## Starts the backend.
 start:
-	dotnet run --project Src/HelloWorld/HelloWorld/HelloWorld.csproj 
+		dotnet run --project Src/HelloWorld/HelloWorld/HelloWorld.csproj
 
+.PHONY: publish
+publish:
+		dotnet publish -c Release -o out
+
+.PHONY: docker
+docker:
+		docker build . -t helloworlddotnet
+
+.PHONY: dockerrun
+dockerrun:docker
+		docker run -d -p 5000:5000 -p 5001:5001 --name helloworlddotnet helloworlddotnet
+
+.PHONY: dockerclean
+dockerclean:
+		docker rm -f helloworlddotnet
+		docker rmi helloworlddotnet
