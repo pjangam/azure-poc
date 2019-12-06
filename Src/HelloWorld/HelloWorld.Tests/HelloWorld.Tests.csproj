@@ -12,6 +12,6 @@
     <PackageReference Include="FluentAssertions" Version="5.9.0"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\HelloWorld\HelloWorld.csproj"/>
+    <ProjectReference Include="..\HelloWorld\HelloWorld.csproj"/>
   </ItemGroup>
 </Project>
