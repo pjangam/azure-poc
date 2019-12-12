@@ -29,4 +29,5 @@ resource "azurerm_public_ip" "api_ip" {
   location = azurerm_resource_group.rg_main.location
   name = "public_ip"
   resource_group_name = azurerm_resource_group.rg_main.name
+  allocation_method = "Static"
 }
