@@ -25,8 +25,8 @@ resource "azurerm_network_interface" "main" {
   }
 }
 
-resource "azurerm_public_ip " "api_ip" {
-  location = "${az}"
-  name = ""
-  resource_group_name = ""
+resource "azurerm_public_ip" "api_ip" {
+  location = azurerm_resource_group.rg_main.location
+  name = "public_ip"
+  resource_group_name = azurerm_resource_group.rg_main.name
 }

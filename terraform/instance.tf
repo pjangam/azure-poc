@@ -4,6 +4,7 @@ resource "azurerm_virtual_machine" "api_server" {
   network_interface_ids = ["${azurerm_network_interface.main.id}"]
   resource_group_name   = "${azurerm_resource_group.rg_main.name}"
   vm_size = "Standard_DS1_v2"
+
   storage_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
@@ -24,5 +25,6 @@ resource "azurerm_virtual_machine" "api_server" {
   os_profile_linux_config {
     disable_password_authentication = false
   }
+
 }
 
