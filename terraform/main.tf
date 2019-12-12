@@ -1,11 +1,11 @@
 terraform {
   required_version = "0.12.17"
-  //    backend "azurerm" {
-  //        resource_group_name  = "StorageAccount-ResourceGroup"
-  //        storage_account_name = "abcd1234"
-  //        container_name       = "tfstate"
-  //        key                  = "prod.terraform.tfstate"
-  //    }
+   backend "azurerm" {
+          storage_account_name = "eepoctfstate"
+          container_name       = "tfstate"
+          key                  = "firstapp.terraform.tfstate"
+          resource_group_name  = "akspochelloworldabc5-rg"
+      }
 }
 
 provider "azurerm" {
