@@ -2,7 +2,7 @@ variable "prefix" {
   default = "firstapp"
 }
 variable "agentVMSize" {
-  default = "Standard_B1ms"
+  default = "Standard_D2s_v3"
 }
 variable "client_secret" {
   default = ""

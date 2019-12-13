@@ -8,7 +8,6 @@ resource "azurerm_kubernetes_cluster" "hello_cluster" {
     name = "dfagentpool"
     vm_size = var.agentVMSize
     count = 1
-    max_count = 2
   }
 
   service_principal {
