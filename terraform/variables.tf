@@ -1,11 +1,8 @@
 variable "prefix" {
   default = "firstapp"
 }
-variable "ssh_key_path" {
-  type = string
-}
 variable "agentVMSize" {
-  default = "Standard_D2_v2"
+  default = "Standard_B1ms"
 }
 variable "client_secret" {
   default = ""

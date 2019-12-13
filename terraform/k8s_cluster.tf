@@ -3,11 +3,14 @@ resource "azurerm_kubernetes_cluster" "hello_cluster" {
   location = azurerm_resource_group.rg_main.location
   name = "hello"
   resource_group_name = azurerm_resource_group.rg_main.name
-  count = 2
+  count = 1
   agent_pool_profile {
     name = "dfagentpool"
     vm_size = var.agentVMSize
+    count = 1
+    max_count = 2
   }
+
   service_principal {
     client_secret = var.client_secret
     client_id =var.client_id
