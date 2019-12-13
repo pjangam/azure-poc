@@ -55,4 +55,11 @@ steps:
         ArtifactName: 'drop'
         publishLocation: 'Container'
 
+    - task: Docker@2
+      inputs:
+        containerRegistry: 'ACRServiceHelloWorld'
+        repository: 'helloword_azpoc'
+        command: 'buildAndPush'
+        Dockerfile: 'Dockerfile'
+
    
