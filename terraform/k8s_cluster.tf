@@ -11,7 +11,7 @@ resource "azurerm_kubernetes_cluster" "hello_cluster" {
   }
 
   service_principal {
-    client_secret var.client_secret
+    client_secret = var.client_secret
     client_id = var.client_id
   }
 }
