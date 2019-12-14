@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'Windows Server Core 1803'
 
 steps:
 - script: echo Hello, world!
