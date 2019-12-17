@@ -8,12 +8,19 @@ resource "azurerm_kubernetes_cluster" "hello_cluster" {
     name = "dfagentpool"
     vm_size = var.agentVMSize
     count = 1
+    min_count = 0
+    max_count = 0
+    availability_zones = []
+    enable_auto_scaling = false
+    enable_node_public_ip = false
+    node_taints = []
   }
 
   service_principal {
     client_secret = var.client_secret
     client_id = var.client_id
   }
+  api_server_authorized_ip_ranges : []
 }
 
 output "client_certificate" {
