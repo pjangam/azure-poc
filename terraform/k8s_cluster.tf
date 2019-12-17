@@ -8,9 +8,6 @@ resource "azurerm_kubernetes_cluster" "hello_cluster" {
     name = "dfagentpool"
     vm_size = var.agentVMSize
     node_count = 1
-    max_count = 0
-    min_count = 0
-    max_pods = 110
     availability_zones = []
     enable_auto_scaling = false
     enable_node_public_ip = false
