@@ -23,7 +23,6 @@ resource "azurerm_kubernetes_cluster" "hello_cluster" {
     client_secret = var.client_secret
     client_id = var.client_id
   }
-  api_server_authorized_ip_ranges : []
 }
 
 output "client_certificate" {
