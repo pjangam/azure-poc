@@ -4,18 +4,24 @@ resource "azurerm_kubernetes_cluster" "hello_cluster" {
   name = "hello"
   resource_group_name = azurerm_resource_group.rg_main.name
   count = 1
-  agent_pool_profile {
+  default_node_pool {
     name = "dfagentpool"
     vm_size = var.agentVMSize
-    count = 1
-    min_count = 0
+    node_count = 1
     max_count = 0
+    min_count = 0
+    max_pods = 110
     availability_zones = []
     enable_auto_scaling = false
     enable_node_public_ip = false
     node_taints = []
+    os_disk_size_gb = 100
+    type = "AvailabilitySet"
   }
+  role_based_access_control {
+    enabled = false
 
+  }
   service_principal {
     client_secret = var.client_secret
     client_id = var.client_id
