@@ -49,7 +49,7 @@ stages:
     displayName: Deploy
     pool:
       vmImage: $(vmImageName)
-    environment: 'aks.default'
+    environment: 'pjangamazurepoc.default'
     strategy:
       runOnce:
         deploy:
