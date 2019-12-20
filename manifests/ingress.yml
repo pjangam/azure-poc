@@ -6,15 +6,11 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
     kubernetes.io/tls-acme: 'true'
 spec:
-  tls:
-    - hosts:
-        - csharpfiddle.westeurope.cloudapp.azure.com
-      secretName: tls-secret
   rules:
     - host: csharpfiddle.westeurope.cloudapp.azure.com
       http:
         paths:
-          - path: /
+          - path: /weather
             backend:
               serviceName: pjangamazurepoc
               servicePort: 80
