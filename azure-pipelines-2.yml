@@ -75,3 +75,25 @@ stages:
               containers: |
                 $(containerRegistry)/$(imageRepository):$(tag)
 
+- task: HelmDeploy@0
+  inputs:
+    connectionType: 'Azure Resource Manager'
+    azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
+    azureResourceGroup: 'firstapp-resources'
+    kubernetesCluster: 'hello'
+    namespace: 'default'
+    command: 'init'
+
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          helm version
+          helm init
+          helm repo add nginx https://helm.nginx.com/stable
+          helm repo update
+          helm install ingress nginx/nginx-ingress --version 0.3.8
+          helm ls
+          kubectl get pods
