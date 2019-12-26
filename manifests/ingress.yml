@@ -4,9 +4,10 @@ metadata:
   name: helloworld-ingress
 spec:
   rules:
-     - http:
-        paths:
-          - path: /weather
-            backend:
-              serviceName: pjangamazurepoc
-              servicePort: 80
+    - host: 13.66.200.227.xip.io
+      http:
+       paths:
+         - path: /weather
+           backend:
+             serviceName: pjangamazurepoc
+             servicePort: 80

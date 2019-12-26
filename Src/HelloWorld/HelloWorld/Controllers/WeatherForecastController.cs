@@ -22,8 +22,10 @@ namespace HelloWorld
         {
             _logger = logger;
         }
+        [HttpGet()]
+        public string Greet() { return "Hello, World!"; }
 
-        [HttpGet]
+        [HttpGet("weather")]
         public IEnumerable<WeatherForecast> Get()
         {
             var rng = new Random();
