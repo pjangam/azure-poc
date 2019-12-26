@@ -32,7 +32,8 @@ stages:
       displayName: Build and push an image to container registry
       inputs:
         containerRegistry: '$(dockerRegistryServiceConnection)'
-        command: 'login'
+        command: 'buildAndPush'
+        Dockerfile: '**/Dockerfile'
 
     - upload: manifests
       artifact: manifests
