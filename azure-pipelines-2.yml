@@ -100,7 +100,6 @@ stages:
               kubernetesCluster: 'hello'
               command: 'repo'
               arguments: 'update'
-
           - task: HelmDeploy@0
             inputs:
               connectionType: 'Azure Resource Manager'
@@ -108,8 +107,11 @@ stages:
               azureResourceGroup: 'firstapp-resources'
               kubernetesCluster: 'hello'
               command: 'install'
-              arguments: 'ingress nginx/nginx-ingress --version 0.3.8'
-
+              chartType: 'Name'
+              chartName: 'nginx/nginx-ingress'
+              releaseName: 'ingress'
+              arguments: '--version 0.3.8'
+              
           - task: HelmDeploy@0
             inputs:
               connectionType: 'Azure Resource Manager'
