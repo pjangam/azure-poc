@@ -89,7 +89,6 @@ stages:
               azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
               azureResourceGroup: 'firstapp-resources'
               kubernetesCluster: 'hello'
-              namespace: 'default'
               command: 'repo'
               arguments: 'add nginx https://helm.nginx.com/stable'
 
@@ -99,7 +98,6 @@ stages:
               azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
               azureResourceGroup: 'firstapp-resources'
               kubernetesCluster: 'hello'
-              namespace: 'default'
               command: 'repo'
               arguments: 'update'
 
@@ -109,7 +107,6 @@ stages:
               azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
               azureResourceGroup: 'firstapp-resources'
               kubernetesCluster: 'hello'
-              namespace: 'default'
               command: 'install'
               arguments: 'ingress nginx/nginx-ingress --version 0.3.8'
 
@@ -119,5 +116,4 @@ stages:
               azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
               azureResourceGroup: 'firstapp-resources'
               kubernetesCluster: 'hello'
-              namespace: 'default'
               command: 'ls'
