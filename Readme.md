@@ -8,10 +8,11 @@
 - k8s using aks
 
 
-## steps to deploy
-- Prerequisit - create account on dev.azure.com and portal.azure.com
-- Create Storage account `eepoctfstate` and container `tfstate` in portal.azure.com for terraform backend
-- Create Container registry `akspochelloworld` for docker image
+## Steps to deploy
+- Prerequisites
+  - create account on dev.azure.com and portal.azure.com
+  - Create Storage account `eepoctfstate` and container `tfstate` in portal.azure.com for terraform backend
+  - Create Container registry `akspochelloworld` for docker image
 - create new project on dev.azure.com
 - In your project go to pipelines and create new pipeline. In this step you will be required to authorize github and portal.azure.com account to dev.azure.com 
 - Use `build_and_push.yml` for build job. This will do following steps on our REST api code base
