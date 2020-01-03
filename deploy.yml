@@ -77,36 +77,6 @@ stages:
               namespace: 'default'
               command: 'init'
 
-          - task: HelmDeploy@0
-            inputs:
-              connectionType: 'Azure Resource Manager'
-              azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
-              azureResourceGroup: 'firstapp-resources'
-              kubernetesCluster: 'hello'
-              command: 'repo'
-              arguments: 'add nginx https://helm.nginx.com/stable'
-
-          - task: HelmDeploy@0
-            inputs:
-              connectionType: 'Azure Resource Manager'
-              azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
-              azureResourceGroup: 'firstapp-resources'
-              kubernetesCluster: 'hello'
-              command: 'repo'
-              arguments: 'update'
-          - task: HelmDeploy@0
-            displayName: helm nginx
-            inputs:
-              connectionType: 'Azure Resource Manager'
-              azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
-              azureResourceGroup: 'firstapp-resources'
-              kubernetesCluster: 'hello'
-              command: 'upgrade'
-              chartType: 'Name'
-              chartName: 'nginx/nginx-ingress'
-              releaseName: 'ingress'
-              arguments: '--version 0.3.8'
-
           
           - task: HelmDeploy@0
             displayName: helm hello world
@@ -121,6 +91,19 @@ stages:
               releaseName: 'helloworld'
               arguments: '--debug'
               
+          - task: HelmDeploy@0
+            displayName: helm nginx
+            inputs:
+              connectionType: 'Azure Resource Manager'
+              azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
+              azureResourceGroup: 'firstapp-resources'
+              kubernetesCluster: 'hello'
+              command: 'upgrade'
+              chartType: 'Name'
+              chartName: 'nginx/nginx-ingress'
+              releaseName: 'ingress'
+              arguments: '--version 0.3.8'
+
           - task: HelmDeploy@0
             displayName: helm ls
             inputs:
