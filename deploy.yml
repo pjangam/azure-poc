@@ -76,7 +76,15 @@ stages:
               kubernetesCluster: 'hello'
               namespace: 'default'
               command: 'init'
-
+          - task: HelmDeploy@0
+            displayName: helm repo update
+            inputs:
+              connectionType: 'Azure Resource Manager'
+              azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
+              azureResourceGroup: 'firstapp-resources'
+              kubernetesCluster: 'hello'
+              command: 'repo'
+              arguments: 'update'
           
           - task: HelmDeploy@0
             displayName: helm hello world
