@@ -117,7 +117,7 @@ stages:
               kubernetesCluster: 'hello'
               command: 'upgrade'
               chartType: 'FilePath'
-              chartPath: 'manifests/helloworld'
+              chartPath: '$(Pipeline.Workspace)/manifests/helloworld'
               releaseName: 'helloworld'
               arguments: '--debug'
               
