@@ -87,7 +87,10 @@ stages:
               azureResourceGroup: 'firstapp-resources'
               kubernetesCluster: 'hello'
               command: 'upgrade'
-              arguments: '--install ingress nginx/nginx-ingress --version 0.3.8'
+              chartType: 'Name'
+              chartName: 'nginx/nginx-ingress'
+              releaseName: 'ingress'
+              arguments: '--version 0.3.8'
 
           
           - task: HelmDeploy@0
@@ -96,8 +99,11 @@ stages:
               azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
               azureResourceGroup: 'firstapp-resources'
               kubernetesCluster: 'hello'
-              command: 'install'
-              arguments: '--name helloworld  --debug $(Pipeline.Workspace)/manifests/helloworld'
+              command: 'upgrade'
+              chartType: 'FilePath'
+              chartPath: 'manifests/helloworld'
+              releaseName: 'helloworld'
+              arguments: '--debug'
               
           - task: HelmDeploy@0
             inputs:
