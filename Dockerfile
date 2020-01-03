@@ -7,7 +7,7 @@ COPY *.sln ./
 RUN dotnet restore
 
 # Copy everything else and build
-COPY . ./
+COPY Src ./Src
 RUN dotnet publish -c Release -o out
 
 # Build runtime image

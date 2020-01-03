@@ -1,0 +1,21 @@
+steps:
+- task: petergroenewegen.PeterGroenewegen-Xpirit-Vsts-Release-Terraform.Xpirit-Vsts-Release-Terraform.Terraform@2
+  displayName: 'Terraform init'
+  inputs:
+    TemplatePath: '$(System.DefaultWorkingDirectory)/_pjangam.azure-poc/drop'
+    Arguments: init
+    InstallTerraform: true
+    Version: 0.12.17
+    UseAzureSub: true
+    ConnectedServiceNameARM: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
+
+steps:
+- task: petergroenewegen.PeterGroenewegen-Xpirit-Vsts-Release-Terraform.Xpirit-Vsts-Release-Terraform.Terraform@2
+  displayName: 'Terraform destroy --auto-approve'
+  inputs:
+    TemplatePath: '$(System.DefaultWorkingDirectory)/_pjangam.azure-poc/drop'
+    Arguments: 'destroy --auto-approve'
+    InstallTerraform: true
+    Version: 0.12.17
+    UseAzureSub: true
+    ConnectedServiceNameARM: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'

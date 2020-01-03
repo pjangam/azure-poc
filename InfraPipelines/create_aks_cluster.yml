@@ -1,0 +1,37 @@
+steps:
+- task: petergroenewegen.PeterGroenewegen-Xpirit-Vsts-Release-Terraform.Xpirit-Vsts-Release-Terraform.Terraform@2
+  displayName: 'Terraform init'
+  inputs:
+    TemplatePath: '$(System.DefaultWorkingDirectory)/_pjangam_azure-poc/terraform'
+    Arguments: init
+    InstallTerraform: true
+    Version: 0.12.17
+    UseAzureSub: true
+    ConnectedServiceNameARM: 'Pay-As-You-Go (136f4268-7dd0-446b-ab31-ec197ff147d5)'
+
+
+steps:
+- task: petergroenewegen.PeterGroenewegen-Xpirit-Vsts-Release-Terraform.Xpirit-Vsts-Release-Terraform.Terraform@2
+  displayName: 'Terraform plan'
+  inputs:
+    TemplatePath: '$(System.DefaultWorkingDirectory)/_pjangam_azure-poc/terraform'
+    Arguments: 'plan -var client_id=05cf34c9-9ee9-43cd-ab01-013887ddc400 -var client_secret=f/Bkm4jMuqjl@RVa/FzKr1]Ylga1IEC9'
+    InstallTerraform: true
+    Version: 0.12.17
+    UseAzureSub: true
+    ConnectedServiceNameARM: 'Pay-As-You-Go (136f4268-7dd0-446b-ab31-ec197ff147d5)'
+
+steps:
+- task: petergroenewegen.PeterGroenewegen-Xpirit-Vsts-Release-Terraform.Xpirit-Vsts-Release-Terraform.Terraform@2
+  displayName: 'Terraform apply'
+  inputs:
+    TemplatePath: '$(System.DefaultWorkingDirectory)/_pjangam_azure-poc/terraform'
+    Arguments: 'apply -auto-approve -var client_id=05cf34c9-9ee9-43cd-ab01-013887ddc400 -var client_secret=f/Bkm4jMuqjl@RVa/FzKr1]Ylga1IEC9'
+    InstallTerraform: true
+    Version: 0.12.17
+    UseAzureSub: true
+    ConnectedServiceNameARM: 'Pay-As-You-Go (136f4268-7dd0-446b-ab31-ec197ff147d5)'
+
+steps:
+- task: HelmInstaller@0
+  displayName: 'Install Helm 2.14.1'
