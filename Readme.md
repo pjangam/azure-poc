@@ -29,3 +29,25 @@
 ##  Limitations/TODOs:
 - [ ] Need to update `manifests/ingress.yml` manually after running `./deploy.yml` as public IP address of ingress would change after new deployment.
 - [ ] Need to change helm install to upgrade.
+
+
+## Learnings
+
+### Azure deveops
+- Has entire project lifecycle tools
+  * Azure repo: Source control tool based on git
+  * Board: Project management tool
+  * Pipeline: CI/CD tool
+  * Test Plan: (not available in free version)
+  * Artifact: 
+
+We covered pipelines in this poc. 
+There are two types of pipelines, normal pipeline (mostly intended for CI) and release pipeline (intended for CD)
+We have created pipelines `build_and_push` for build, test code and build and push docker image to Azure Container registry
+
+
+
+
+### k8s
+
+### aks

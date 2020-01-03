@@ -66,9 +66,6 @@ stages:
               action: deploy
               manifests: |
                 $(Pipeline.Workspace)/manifests/tiller.yml
-                $(Pipeline.Workspace)/manifests/ingress.yml
-                $(Pipeline.Workspace)/manifests/deployment.yml
-                $(Pipeline.Workspace)/manifests/service.yml
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
@@ -89,17 +86,10 @@ stages:
               azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
               azureResourceGroup: 'firstapp-resources'
               kubernetesCluster: 'hello'
-              command: 'repo'
-              arguments: 'add nginx https://helm.nginx.com/stable'
+              command: 'upgrade'
+              arguments: '--install ingress nginx/nginx-ingress --version 0.3.8'
 
-          - task: HelmDeploy@0
-            inputs:
-              connectionType: 'Azure Resource Manager'
-              azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
-              azureResourceGroup: 'firstapp-resources'
-              kubernetesCluster: 'hello'
-              command: 'repo'
-              arguments: 'update'
+          
           - task: HelmDeploy@0
             inputs:
               connectionType: 'Azure Resource Manager'
@@ -107,10 +97,7 @@ stages:
               azureResourceGroup: 'firstapp-resources'
               kubernetesCluster: 'hello'
               command: 'install'
-              chartType: 'Name'
-              chartName: 'nginx/nginx-ingress'
-              releaseName: 'ingress'
-              arguments: '--version 0.3.8'
+              arguments: '--name helloworld  --debug $(Pipeline.Workspace)/manifests/helloworld'
               
           - task: HelmDeploy@0
             inputs:

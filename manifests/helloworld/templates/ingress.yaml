@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: helloworld-ingress
+spec:
+  rules:
+    - host: 10.110.232.120.xip.io
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: pjangamazurepoc
+              servicePort: 80

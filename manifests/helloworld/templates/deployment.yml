@@ -11,6 +11,8 @@ spec:
     spec:
       containers:
         - name: pjangamazurepoc 
-          image: akspochelloworld.azurecr.io/pjangamazurepoc
+          image: akspochelloworld.azurecr.io/pjangamazurepoc:113
           ports:
           - containerPort: 80
+      imagePullSecrets:
+        - name: registry-secret
