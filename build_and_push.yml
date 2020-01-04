@@ -74,3 +74,6 @@ steps:
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: 'az acr helm push helloworld-0.1.0.tgz'
+        addSpnToEnvironment: true
+        useGlobalConfig: true
+        failOnStandardError: true
