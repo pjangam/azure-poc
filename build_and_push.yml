@@ -75,7 +75,7 @@ steps:
           pwd
           ls
           helm init -c
-          docker login akspochelloworld.azurecr.io -p $ACRPASSWORD -u akspochelloworld
+          docker login akspochelloworld.azurecr.io -p $(acrpassword) -u akspochelloworld
     - task: HelmDeploy@0
       displayName: helm package
       inputs:
