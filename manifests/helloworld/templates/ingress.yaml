@@ -1,10 +1,10 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: helloworld-ingress
+  name: ingress-nginx
 spec:
   rules:
-    - host: 10.110.232.120.xip.io
+    - host: 51.141.165.251.xip.io
       http:
         paths:
           - path: /

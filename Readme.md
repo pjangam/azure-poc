@@ -29,6 +29,8 @@
 ##  Limitations/TODOs:
 - [ ] Need to update `manifests/ingress.yml` manually after running `./deploy.yml` as public IP address of ingress would change after new deployment.
 - [ ] Need to change helm install to upgrade.
+- [ ] Manually update Environment after every terraform recreate (destroy and apply)
+- [ ] Figure out best suited vm size in `terraform/variables.tf`
 
 
 ## Learnings
@@ -44,9 +46,6 @@
 We covered pipelines in this poc. 
 There are two types of pipelines, normal pipeline (mostly intended for CI) and release pipeline (intended for CD)
 We have created pipelines `build_and_push` for build, test code and build and push docker image to Azure Container registry
-
-
-
 
 ### k8s
 
