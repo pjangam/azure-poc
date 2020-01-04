@@ -74,6 +74,7 @@ steps:
         inlineScript: |
           pwd
           ls
+          helm init -c
     - task: HelmDeploy@0
       displayName: helm package
       inputs:
