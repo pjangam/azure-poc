@@ -75,9 +75,7 @@ steps:
           pwd
           ls
           helm init -c
-          docker login akspochelloworld.azurecr.io -p $(acrpassword) -u akspochelloworld
-          az configure --defaults acr=akspochelloworld
-          az acr helm repo add
+          
     - task: HelmDeploy@0
       displayName: helm package
       inputs:
@@ -91,6 +89,10 @@ steps:
         azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
-        inlineScript: 'az acr helm push helloworld-0.1.0.tgz --name helloworld'
+        inlineScript: |
+          docker login akspochelloworld.azurecr.io -p $(acrpassword) -u akspochelloworld
+          az configure --defaults acr=akspochelloworld
+          az acr helm repo add
+          az acr helm push helloworld-0.1.0.tgz --name helloworld
         useGlobalConfig: true
         failOnStandardError: true
