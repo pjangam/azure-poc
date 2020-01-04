@@ -62,4 +62,15 @@ steps:
         command: 'buildAndPush'
         Dockerfile: 'Dockerfile'
 
-   
+    - task: HelmDeploy@0
+      inputs:
+        command: 'package'
+        chartPath: 'manifests/helloworld/'
+        chartVersion: '0.1.0'
+        updateDependency: true
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: 'az acr helm push helloworld-0.1.0.tgz'
