@@ -76,6 +76,8 @@ steps:
           ls
           helm init -c
           docker login akspochelloworld.azurecr.io -p $(acrpassword) -u akspochelloworld
+          az configure --defaults acr=akspochelloworld
+          az acr helm repo add
     - task: HelmDeploy@0
       displayName: helm package
       inputs:
