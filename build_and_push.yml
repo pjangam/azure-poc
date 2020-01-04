@@ -27,6 +27,7 @@ steps:
     - task: NuGetToolInstaller@1
 
     - task: NuGetCommand@2
+      displayName: nuget restore
       inputs:
         restoreSolution: '$(solution)'
 
@@ -44,18 +45,21 @@ steps:
         projects: '**/*.csproj'
 
     - task: CopyFiles@2
+      displayName: copy terraform files
       inputs:
        SourceFolder: 'terraform/'
        Contents: '**.tf'
        TargetFolder: '$(build.artifactstagingdirectory)'
     
     - task: PublishBuildArtifacts@1
+      displayName: create terraform artifact
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)'
         ArtifactName: 'drop'
         publishLocation: 'Container'
 
     - task: Docker@2
+      displayName: docker build and push
       inputs:
         containerRegistry: 'ACRServiceHelloWorld'
         repository: 'helloword_azpoc'
@@ -63,12 +67,14 @@ steps:
         Dockerfile: 'Dockerfile'
 
     - task: HelmDeploy@0
+      displayName: helm package
       inputs:
         command: 'package'
         chartPath: 'manifests/helloworld/'
         chartVersion: '0.1.0'
         updateDependency: true
     - task: AzureCLI@2
+      displayName: helm push
       inputs:
         azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
         scriptType: 'bash'
