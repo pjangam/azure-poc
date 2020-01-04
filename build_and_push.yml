@@ -65,7 +65,15 @@ steps:
         repository: 'helloword_azpoc'
         command: 'buildAndPush'
         Dockerfile: 'Dockerfile'
-
+    - task: AzureCLI@2
+      displayName: pwd ls
+      inputs:
+        azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          pwd
+          ls
     - task: HelmDeploy@0
       displayName: helm package
       inputs:
