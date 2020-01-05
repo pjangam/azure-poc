@@ -114,6 +114,7 @@ stages:
               chartType: 'Name'
               chartName: 'akspochelloworld/helloworld'
               releaseName: 'helloworld'
+              force: true
               arguments: '--debug --install'
           - task: HelmDeploy@0
             displayName: helm ls
