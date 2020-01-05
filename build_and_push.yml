@@ -94,6 +94,6 @@ steps:
           docker login akspochelloworld.azurecr.io -p $(acrpassword) -u akspochelloworld
           az configure --defaults acr=akspochelloworld
           az acr helm repo add
-          az acr helm push helloworld-0.1.0.tgz --name akspochelloworld
+          az acr helm push *.tgz --name akspochelloworld
         useGlobalConfig: true
         failOnStandardError: true
