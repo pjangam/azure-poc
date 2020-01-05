@@ -64,6 +64,15 @@ stages:
                 $(imagePullSecret)
               containers: |
                 $(containerRegistry)/$(imageRepository):$(tag)
+          - task: Kubernetes@1
+            inputs:
+              connectionType: 'Kubernetes Service Connection'
+              command: 'create'
+              secretType: 'dockerRegistry'
+              containerRegistryType: 'Azure Container Registry'
+              azureSubscriptionEndpointForSecrets: 'Pay-As-You-Go(1)(136f4268-7dd0-446b-ab31-ec197ff147d5)'
+              azureContainerRegistry: 'akspochelloworld.azurecr.io'
+              secretName: 'registry-secret'
           - task: HelmDeploy@0
             displayName: helm init
             inputs:
