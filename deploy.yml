@@ -104,6 +104,8 @@ stages:
               scriptLocation: 'inlineScript'
               inlineScript: |
                 helm repo update
+                kubectl create secret docker-registry registry-secret --docker-server="akspochelloworld.azurecr.io" --docker-username=$(acruser) --docker-password="$(acrpassword)" --docker-email=not-needed@example.com
+                docker login akspochelloworld.azurecr.io -p $(acrpassword) -u $(acruser)
                 az configure --defaults acr=akspochelloworld
                 az acr helm repo add
                 helm repo update
