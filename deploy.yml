@@ -98,6 +98,7 @@ stages:
                 az configure --defaults acr=akspochelloworld
                 az acr helm repo add
                 helm repo update
+                helm search hello
               
           - task: HelmDeploy@0
             displayName: helm hello world
