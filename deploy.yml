@@ -71,6 +71,7 @@ stages:
               azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
               azureResourceGroup: 'firstapp-resources'
               kubernetesCluster: 'hello'
+              useClusterAdmin: true
               namespace: 'default'
               command: 'init'
           - task: HelmDeploy@0
