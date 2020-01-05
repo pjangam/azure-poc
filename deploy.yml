@@ -18,7 +18,6 @@ variables:
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
   
-
 stages:
 - stage: Build
   displayName: Build stage
@@ -55,9 +54,8 @@ stages:
               action: createSecret
               secretName: $(imagePullSecret)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
-              
           - task: KubernetesManifest@0
-            displayName: Deploy to Kubernetes cluster
+            displayName: Deploy tiller to Kubernetes cluster
             inputs:
               action: deploy
               manifests: |
@@ -66,7 +64,6 @@ stages:
                 $(imagePullSecret)
               containers: |
                 $(containerRegistry)/$(imageRepository):$(tag)
-
           - task: HelmDeploy@0
             displayName: helm init
             inputs:
@@ -85,7 +82,6 @@ stages:
               kubernetesCluster: 'hello'
               command: 'repo'
               arguments: 'update'
-          
           - task: HelmDeploy@0
             displayName: helm hello world
             inputs:
@@ -94,24 +90,10 @@ stages:
               azureResourceGroup: 'firstapp-resources'
               kubernetesCluster: 'hello'
               command: 'upgrade'
-              chartType: 'FilePath'
-              chartPath: '$(Pipeline.Workspace)/manifests/helloworld'
+              chartType: 'Name'
+              chartName: 'akspochelloworld/helloworld'
               releaseName: 'helloworld'
               arguments: '--debug'
-              
-          - task: HelmDeploy@0
-            displayName: helm nginx
-            inputs:
-              connectionType: 'Azure Resource Manager'
-              azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
-              azureResourceGroup: 'firstapp-resources'
-              kubernetesCluster: 'hello'
-              command: 'upgrade'
-              chartType: 'Name'
-              chartName: 'nginx/nginx-ingress'
-              releaseName: 'ingress'
-              arguments: '--version 0.3.8'
-
           - task: HelmDeploy@0
             displayName: helm ls
             inputs:
