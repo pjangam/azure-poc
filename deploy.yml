@@ -94,8 +94,10 @@ stages:
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
               inlineScript: |
+                helm repo update
                 az configure --defaults acr=akspochelloworld
                 az acr helm repo add
+                helm repo update
               
           - task: HelmDeploy@0
             displayName: helm hello world
