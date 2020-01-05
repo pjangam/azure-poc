@@ -81,7 +81,6 @@ steps:
       inputs:
         command: 'package'
         chartPath: 'manifests/helloworld/'
-        chartVersion: '0.1.0'
         updateDependency: true
     - task: AzureCLI@2
       displayName: helm push
