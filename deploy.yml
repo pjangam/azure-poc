@@ -83,6 +83,20 @@ stages:
               kubernetesCluster: 'hello'
               command: 'repo'
               arguments: 'update'
+          - task: Docker@2
+            inputs:
+              containerRegistry: 'akspochelloworld'
+              command: 'login'
+
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'Pay-As-You-Go(1)(136f4268-7dd0-446b-ab31-ec197ff147d5)'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az configure --defaults acr=akspochelloworld
+                az acr helm repo add
+              
           - task: HelmDeploy@0
             displayName: helm hello world
             inputs:
