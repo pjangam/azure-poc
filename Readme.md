@@ -31,6 +31,8 @@
 - [ ] Need to change helm install to upgrade.
 - [ ] Manually update Environment after every terraform recreate (destroy and apply)
 - [ ] Figure out best suited vm size in `terraform/variables.tf`
+- [ ] Update helm version with every release
+- [ ] update docker image version in helm chart. try to use latest tag instead of specific
 
 
 ## Learnings
