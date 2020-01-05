@@ -78,7 +78,7 @@ stages:
             displayName: helm repo update
             inputs:
               connectionType: 'Azure Resource Manager'
-              azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
+              azureSubscription: 'Pay-As-You-Go(1)(136f4268-7dd0-446b-ab31-ec197ff147d5)'
               azureResourceGroup: 'firstapp-resources'
               kubernetesCluster: 'hello'
               command: 'repo'
@@ -87,7 +87,7 @@ stages:
             displayName: helm hello world
             inputs:
               connectionType: 'Azure Resource Manager'
-              azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
+              azureSubscription: 'Pay-As-You-Go(1)(136f4268-7dd0-446b-ab31-ec197ff147d5)'
               azureResourceGroup: 'firstapp-resources'
               kubernetesCluster: 'hello'
               command: 'upgrade'
@@ -99,7 +99,7 @@ stages:
             displayName: helm ls
             inputs:
               connectionType: 'Azure Resource Manager'
-              azureSubscription: 'Pay-As-You-Go(136f4268-7dd0-446b-ab31-ec197ff147d5)'
+              azureSubscription: 'Pay-As-You-Go(1)(136f4268-7dd0-446b-ab31-ec197ff147d5)'
               azureResourceGroup: 'firstapp-resources'
               kubernetesCluster: 'hello'
               command: 'ls'
