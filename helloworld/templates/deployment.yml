@@ -1,0 +1,18 @@
+apiVersion : apps/v1beta1
+kind: Deployment
+metadata:
+  name: pjangamazurepoc 
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pjangamazurepoc 
+    spec:
+      containers:
+        - name: pjangamazurepoc 
+          image: akspochelloworld.azurecr.io/pjangamazurepoc:113
+          ports:
+          - containerPort: 80
+      imagePullSecrets:
+        - name: registry-secret
