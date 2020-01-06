@@ -54,6 +54,9 @@ steps:
         repository: 'helloword_azpoc'
         command: 'buildAndPush'
         Dockerfile: 'Dockerfile'
+        tags: |
+          $(Build.BuildId)
+          latest
     - task: AzureCLI@2
       displayName: initialize helm client
       inputs:
