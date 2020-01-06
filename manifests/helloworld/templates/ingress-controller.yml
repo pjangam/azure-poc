@@ -25,6 +25,18 @@ spec:
       terminationGracePeriodSeconds: 60
       containers:
       - image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.18.0
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 10
+          timeoutSeconds: 1
         name: nginx-ingress-controller
         ports:
         - containerPort: 80
