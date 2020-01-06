@@ -19,11 +19,12 @@ steps:
       displayName: install dotnet runtime 3.0
       inputs:
         version: '3.0.x'
-    - task: NuGetToolInstaller@1
-    - task: NuGetCommand@2
-      displayName: nuget restore
+    - task: DotNetCoreCLI@2
+      displayName: dotnet restore
       inputs:
-        restoreSolution: '$(solution)'
+        command: 'restore'
+        feedsToUse: 'select'
+        verbosityRestore: 'Normal'
     - task: DotNetCoreCLI@2
       displayName: Build
       inputs:
