@@ -9,7 +9,7 @@ variables:
 
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: '5d911ca7-6668-422d-af12-f37d346a1529'
-  imageRepository: 'pjangamazurepoc'
+  imageRepository: 'helloword_azpoc'
   containerRegistry: 'akspochelloworld.azurecr.io'
   dockerfilePath: '**/Dockerfile'
   tag: '$(Build.BuildId)'

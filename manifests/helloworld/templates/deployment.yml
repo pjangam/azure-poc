@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
         - name: pjangamazurepoc 
-          image: akspochelloworld.azurecr.io/pjangamazurepoc:113
+          image: akspochelloworld.azurecr.io/helloword_azpoc:latest
           ports:
           - containerPort: 80
       imagePullSecrets:
