@@ -4,7 +4,7 @@ metadata:
   name: ingress-nginx
 spec:
   rules:
-    - host: 51.141.165.251.xip.io
+    - host: 51.143.3.161.xip.io
       http:
         paths:
           - path: /
