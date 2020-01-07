@@ -16,7 +16,13 @@ test:
 
 .PHONY: start
 start:
-		dotnet run --project Src/HelloWorld/HelloWorld/HelloWorld.csproj
+		#sudo npm i -g pm2
+		pm2 start apps.json
+
+.PHONY:stop
+stop:
+		pm2 stop apps.json
+		pm2 delete apps.json
 
 .PHONY: publish
 publish:

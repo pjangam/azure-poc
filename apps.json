@@ -1,0 +1,37 @@
+{
+    "apps": [
+        {
+            "name": "HelloWorld",
+            "script": "dotnet run --project Src/HelloWorld/HelloWorld/HelloWorld.csproj",
+            "instances": 1,
+            "exec_mode": "fork",
+            "env": {
+                "NODE_ENV": "production"
+            }
+        },{
+            "name": "InventoryProvider",
+            "script": "dotnet run --project Src/InventoryProvider/InventoryProvider.csproj",
+            "instances": 1,
+            "exec_mode": "fork",
+            "env": {
+                "NODE_ENV": "production"
+            }
+        },{
+            "name": "ShoppingCart",
+            "script": "dotnet run --project Src/ShoppingCart/ShoppingCart.csproj",
+            "instances": 1,
+            "exec_mode": "fork",
+            "env": {
+                "NODE_ENV": "production"
+            }
+        },{
+            "name": "ShippingProvider",
+            "script": "dotnet run --project Src/ShippingProvider/ShippingProvider.csproj",
+            "instances": 1,
+            "exec_mode": "fork",
+            "env": {
+                "NODE_ENV": "production"
+            }
+        },
+    ]
+}
