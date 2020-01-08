@@ -1,7 +1,30 @@
 version: '3'
 services:
-  web:
-    build: .
+  inventory-provider:
+    container_name: inventory-provider
+    hostname: inventory-provider 
+    build: ./Src/InventoryProvider
+    ports:
+    - "5010:80"
+    image: inventory-provider:0.0.2
+  shipping-provider:
+    build: ./Src/ShippingProvider
+    ports:
+    - "5030:80"
+    image: shipping-provider:0.0.2
+  hello-world:
+    build: ./Src/HelloWorld/HelloWorld
     ports:
     - "5000:80"
-    image: helloworlddotnet:0.0.1
+    image: hello-world:0.0.2
+  shopping-cart:
+    build: ./Src/ShoppingCart
+    ports:
+    - "5020:80"
+    image: shopping-cart:0.0.2
+    links:
+      - "shipping-provider:shipping-provider"
+      - "inventory-provider:inventory-provider"
+    environment:
+      - inventoryServiceUrl=http://inventory-provider
+      - shippingServiceUrl=http://shipping-provider
