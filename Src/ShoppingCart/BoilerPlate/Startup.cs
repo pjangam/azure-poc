@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
+
 namespace ShoppingCart
 {
     public class Startup
@@ -18,6 +19,7 @@ namespace ShoppingCart
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            
         }
 
         public IConfiguration Configuration { get; }
@@ -36,7 +38,7 @@ namespace ShoppingCart
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 

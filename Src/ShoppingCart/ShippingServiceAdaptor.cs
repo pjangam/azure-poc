@@ -16,7 +16,8 @@ namespace ShoppingCart.Controllers
         //public async Task<ProductDetail> GetProductDetails(string productId)
         public async Task<List<DateTime>> GetDeliverySlots(string providerLocation, string deliveryLocation)
         {
-            var productDetailString = await Helper.GetAsync($"_url/{providerLocation}/{deliveryLocation}");
+            System.Console.WriteLine($"{_url}/{providerLocation}/{deliveryLocation}");
+            var productDetailString = await Helper.GetAsync($"{_url}/{providerLocation}/{deliveryLocation}");
             return JsonConvert.DeserializeObject<List<DateTime>>(productDetailString);
         }
 

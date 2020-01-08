@@ -16,7 +16,9 @@ namespace ShoppingCart
             using (Stream stream = response.GetResponseStream())
             using (StreamReader reader = new StreamReader(stream))
             {
-                return await reader.ReadToEndAsync();
+                var result = await reader.ReadToEndAsync();
+                System.Console.WriteLine(result);
+                return result;//todo:remove cw
             }
         }
     }

@@ -2,9 +2,6 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
-  <ItemGroup>&#xD;
-  </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NodaMoney" Version="1.0.5"/>
   </ItemGroup>
 </Project>

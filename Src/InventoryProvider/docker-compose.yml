@@ -1,0 +1,7 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+    - "5010:80"
+    image: inventory-provider:0.0.1

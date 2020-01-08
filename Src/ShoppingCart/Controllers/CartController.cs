@@ -14,13 +14,13 @@ namespace ShoppingCart.Controllers
         private readonly InventoryServiceAdaptor _inventory;
         private readonly ShippingServiceAdaptor _shipping;
 
-        public CartController(InventoryServiceAdaptor inventory, ShippingServiceAdaptor shipping)
+        public CartController()//(InventoryServiceAdaptor inventory, ShippingServiceAdaptor shipping)
         {
-            this._shipping = shipping;
-            this._inventory = inventory;
+            this._shipping = new ShippingServiceAdaptor();
+            this._inventory = new InventoryServiceAdaptor();
 
         }
-        [HttpPost]
+        [HttpGet("/{productId}/{deliveryLocation}")] //todo:move to post with json body
         public async Task<ShippingDetails> Checkout(string productId, string deliveryLocation)
         {
             var productDetail = await _inventory.GetProductDetails(productId);

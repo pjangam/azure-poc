@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using NodaMoney;
 
 namespace ShoppingCart.Controllers
 {
@@ -14,7 +13,8 @@ namespace ShoppingCart.Controllers
         }
         public async Task<ProductDetail> GetProductDetails(string productId)
         {
-            var productDetailString = await Helper.GetAsync($"_url/{productId}");
+            System.Console.WriteLine($"{_url}/{productId}");
+            var productDetailString = await Helper.GetAsync($"{_url}/{productId}");
             return JsonConvert.DeserializeObject<ProductDetail>(productDetailString);
         }
     }

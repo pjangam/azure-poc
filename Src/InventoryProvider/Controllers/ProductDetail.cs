@@ -1,5 +1,3 @@
-using NodaMoney;
-
 namespace InventoryProvider.Controllers
 {
     public class ProductDetail
