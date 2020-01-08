@@ -51,10 +51,41 @@ steps:
     - task: Docker@2
       displayName: docker build and push
       inputs:
-        containerRegistry: 'ACRServiceHelloWorld'
+        containerRegistry: 'akspochelloworld'
         repository: 'helloword_azpoc'
         command: 'buildAndPush'
         Dockerfile: 'Src/HelloWorld/HelloWorld/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+          latest
+
+    - task: Docker@2
+      displayName: docker build and push
+      inputs:
+        containerRegistry: 'akspochelloworld'
+        repository: 'shopping-cart'
+        command: 'buildAndPush'
+        Dockerfile: 'Src/ShoppingCart/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+          latest
+    - task: Docker@2
+      displayName: docker build and push
+      inputs:
+        containerRegistry: 'akspochelloworld'
+        repository: 'shipping-provider'
+        command: 'buildAndPush'
+        Dockerfile: 'Src/ShippingProvider/Dockerfile'
+        tags: |
+          $(Build.BuildId)
+          latest
+    - task: Docker@2
+      displayName: docker build and push
+      inputs:
+        containerRegistry: 'akspochelloworld'
+        repository: 'inventory-provider'
+        command: 'buildAndPush'
+        Dockerfile: 'Src/InventoryProvider/Dockerfile'
         tags: |
           $(Build.BuildId)
           latest
@@ -70,7 +101,13 @@ steps:
       displayName: create helm package
       inputs:
         command: 'package'
-        chartPath: 'manifests/helloworld/'
+        chartPath: 'kubernates/helloworld/'
+        updateDependency: true
+    - task: HelmDeploy@0
+      displayName: create helm package
+      inputs:
+        command: 'package'
+        chartPath: 'kubernates/shopping-cart/'
         updateDependency: true
     - task: AzureCLI@2
       displayName: push helm package to acr
