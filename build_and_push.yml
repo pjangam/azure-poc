@@ -54,7 +54,7 @@ steps:
         containerRegistry: 'ACRServiceHelloWorld'
         repository: 'helloword_azpoc'
         command: 'buildAndPush'
-        Dockerfile: 'Dockerfile'
+        Dockerfile: 'Src/HelloWorld/HelloWorld/Dockerfile'
         tags: |
           $(Build.BuildId)
           latest
