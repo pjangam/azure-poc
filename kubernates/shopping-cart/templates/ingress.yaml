@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-nginx
+spec:
+  rules:
+    - host: 51.143.3.161.xip.io
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: shoppingcartservice
+              servicePort: 80

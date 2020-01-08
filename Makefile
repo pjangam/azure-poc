@@ -38,5 +38,5 @@ dockerrun:docker
 
 .PHONY: dockerclean
 dockerclean:
-		docker rm -f helloworld_web_1
-		docker rmi helloworlddotnet
+		docker-compose stop
+		docker system prune -f

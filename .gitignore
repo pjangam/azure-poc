@@ -69,4 +69,4 @@ override.tf.json
 # example: *tfplan*
 *.tgz
 User.mk
-
+kubernates/output.txt

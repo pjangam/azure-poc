@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: inventoryservice
+spec:
+    type: ClusterIP
+    ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+    selector:
+        app: inventoryprovider
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: shippingservice
+spec:
+    type: ClusterIP
+    ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+    selector:
+        app: shippingprovider
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: shoppingcartservice
+spec:
+    type: ClusterIP
+    ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+    selector:
+        app: shoppingcart

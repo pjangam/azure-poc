@@ -3,7 +3,6 @@ kind: ClusterRoleBinding
 metadata:
   creationTimestamp: "2020-01-06T12:59:14Z"
   name: service-admin
-  resourceVersion: "36883"
   selfLink: /apis/rbac.authorization.k8s.io/v1/clusterrolebindings/service-admin
   uid: 20f5a9c3-d815-465d-b2f5-5a8adaad7052
 roleRef:

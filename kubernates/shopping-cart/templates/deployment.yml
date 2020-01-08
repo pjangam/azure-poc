@@ -1,0 +1,67 @@
+apiVersion : apps/v1beta1
+kind: Deployment
+metadata:
+  name: shoppingcart 
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: shoppingcart
+        type: webapi
+        externalexpose: "true"
+    spec:
+      containers:
+        - name: shopping-cart 
+          image: akspochelloworld.azurecr.io/shopping-cart:latest
+          ports:
+          - containerPort: 80
+          env:
+          - name: inventoryServiceUrl
+            value: "http://inventoryservice"
+          - name: shippingServiceUrl
+            value: "http://shippingservice"
+      imagePullSecrets:
+        - name: registry-secret
+---
+apiVersion : apps/v1beta1
+kind: Deployment
+metadata:
+  name: shippingprovider
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: shippingprovider
+        type: webapi
+        expernalexpose: "false"
+    spec:
+      containers:
+        - name: shippingprovider 
+          image: akspochelloworld.azurecr.io/shipping-provider:latest
+          ports:
+          - containerPort: 80
+      imagePullSecrets:
+        - name: registry-secret
+---
+apiVersion : apps/v1beta1
+kind: Deployment
+metadata:
+  name: inventoryprovider
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: inventoryprovider
+        type: webapi
+        expernalexpose: "false"
+    spec:
+      containers:
+        - name: inventoryprovider 
+          image: akspochelloworld.azurecr.io/inventory-provider:latest
+          ports:
+          - containerPort: 80
+      imagePullSecrets:
+        - name: registry-secret
