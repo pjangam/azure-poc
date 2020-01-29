@@ -6,26 +6,15 @@ import os
 
 class get_aks:
     def __init__(self, credentials, subscriptionId):
-        self.data = []
-        self.subscriptionId = subscriptionId
-        self.credentials = ""
         self.test_mode = 'None'.lower()
         self.cs_client = self.create_mgmt_client(
             azure.mgmt.containerservice.ContainerServiceClient
         )
 
-    def create(self):
-        client = ContainerServiceClient(self.credentials, self.subscriptionId)
-        print(dir(client.container_services))
-        a = ArtifactSourcesOperations(client=client, config=config,)
-        a.create_or_update('resource_group_name', 'service_topology_name', 'service_name',
-                           'service_info', custom_headers=None, raw=False, **operation_config)
-        return "aks_target"
-
     def is_playback(self):
         return self.test_mode == "playback"
 
-    def test1(self, config):
+    def create(self, config):
         self.cs_client.container_services.create_or_update(
             config['resource_group'],
             config['container_name'],
@@ -59,13 +48,6 @@ class get_aks:
         return "bye"
 
     def create_mgmt_client(self, client_class, **kwargs):
-        # Whatever the client, if subscription_id is None, fail
-        # self.create_basic_client(
-        #     client_class,
-        #     subscription_id=None,
-        #     **kwargs
-        # )
-
         subscription_id = None
         if self.is_live:
             subscription_id = os.environ.get("AZURE_SUBSCRIPTION_ID", None)
@@ -79,12 +61,6 @@ class get_aks:
         )
 
     def create_basic_client(self, client_class, **kwargs):
-        # Whatever the client, if credentials is None, fail
-        # client = client_class(
-        #     credentials=credentials,
-        #     **kwargs
-        # )
-
         tenant_id = os.environ.get("AZURE_TENANT_ID", None)
         client_id = os.environ.get("AZURE_CLIENT_ID", None)
         secret = os.environ.get("AZURE_CLIENT_SECRET", None)

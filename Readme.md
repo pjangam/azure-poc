@@ -41,6 +41,12 @@
 - [ ] Code checkout- move to ssh based checkout instead of oauth based
 - [ ] Create Makefile for helmcharts 
 
+
+## Python sript [WIP]
+
+
+
+
 ## Learnings
 
 ### Azure deveops

@@ -16,5 +16,5 @@ def createCluster():
     body = request.get_json()
     print(body)
     aks = get_aks("a", "Standard_D2s_v3")
-    aks.test1(body)
+    aks.create(body)
     return "Hello, World!"
