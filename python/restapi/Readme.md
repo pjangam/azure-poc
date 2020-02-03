@@ -1,8 +1,5 @@
 # This is rest api to manage aks cluster on azure
 
-## Tech stack:
-python, flask, virtualenv
-
 ## Environment variables:
 
 - AZURE_CLIENT_ID
@@ -12,15 +9,14 @@ python, flask, virtualenv
 
 ## How to run
 
-Option 1
+create credentials using command:
 
-make run
+```
+export resourceGroup=firstapp-resources
 
-Option 2
-
-create credentials using:
-`az ad sp create-for-rbac -n "http://my-app" --role contributor --scopes /subscriptions/136f4268-7dd0-446b-ab31-ec197ff147d5/resourceGroups/firstapp-resources`
-this returns json 
+az ad sp create-for-rbac -n "http://my-app" --role contributor --scopes /subscriptions/136f4268-7dd0-446b-ab31-ec197ff147d5/resourceGroups/$
+```
+this creates new app in azure with full access on resourceGroup specified returns json
 ```
 {
   "appId": “xxxxxxxxxxxxxxxxxxxx”,
@@ -30,11 +26,16 @@ this returns json
   "tenant":  “xxxxxxxxxxxxxxxxxxxx”
 }
 ```
-Configure this to .env and azurermconfig.json
-Note that password in json is your appSecret 
+Configure environment variables mentioned above to .env file
+
+Note that
+- AZURE_CLIENT_ID is appId in json
+- AZURE_CLIENT_SECRET is password in json
+- AZURE_TENANT_ID is tenant in json
+- AZURE_SUBSCRIPTION_ID can be retrieved from azure portal 
 
 run 
-`python3 myazure/instance.py -n frompython -l 'West US 2' -g firstapp-resources`
+`make run`
 
 
 

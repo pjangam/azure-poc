@@ -1,3 +1,7 @@
+#!make
+include .env
+export
+
 SHELL := /bin/bash
 
 .PHONY: globalenv

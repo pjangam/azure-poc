@@ -104,7 +104,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"a\": 4,\n    \"resource_group\": \"firstapp-resources\",\n    \"cluster_name\": \"test-python-container-pj2\",\n    \"location\": \"West US 2\",\n    \"dns_prefix\": \"pj-pi-\",\n    \"node_count\": 2,\n    \"size\": \"Standard_D2s_v3\",\n    \"public_key\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWM58od7yvDBt+FYBr1ZPKIwKv50KR7SDDPA4nDqfxdLSwa1dDgHPnI0MuqJqJ1AECtgXHy+EbMf6yUJwPe8T3EZlNT43880FJfbcgalvP3AyxCmR332Oya1XW/8FtXB0+5vH//V0RdXV3NwWIkTfB8Ndkk6dEL8dXpaYqhoa8vam6mtLejxZ/qy19Cc0xgi0a5S2b4VJ3R4NNQuLsIqnLIxgHshAya9l9HejKbQXxReFlJgMHt/BcDiOjv8rPr98KDm5viKaT9v2ws+cAF/x3fnOvd8R41e5I7GaJfKhNtm4Dc0QJ7ip8l2DpJlyveeFqX0an69W7Ty3lvFulUIYz pramodjangam@Pramods-MacBook-Pro.local\"\n}",
+					"raw": "{\n    \"a\": 4,\n    \"resource_group\": \"firstapp-resources\",\n    \"cluster_name\": \"test-python-container-pj2\",\n    \"location\": \"West US 2\",\n    \"dns_prefix\": \"dnsPrefix\",\n    \"node_count\": 2,\n    \"size\": \"Standard_D2s_v3\",\n    \"public_key\": \"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWM58od7yvDBt+FYBr1ZPKIwKv50KR7SDDPA4nDqfxdLSwa1dDgHPnI0MuqJqJ1AECtgXHy+EbMf6yUJwPe8T3EZlNT43880FJfbcgalvP3AyxCmR332Oya1XW/8FtXB0+5vH//V0RdXV3NwWIkTfB8Ndkk6dEL8dXpaYqhoa8vam6mtLejxZ/qy19Cc0xgi0a5S2b4VJ3R4NNQuLsIqnLIxgHshAya9l9HejKbQXxReFlJgMHt/BcDiOjv8rPr98KDm5viKaT9v2ws+cAF/x3fnOvd8R41e5I7GaJfKhNtm4Dc0QJ7ip8l2DpJlyveeFqX0an69W7Ty3lvFulUIYz pramodjangam@Pramods-MacBook-Pro.local\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"

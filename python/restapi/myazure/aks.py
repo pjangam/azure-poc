@@ -14,9 +14,15 @@ class get_aks:
     def is_playback(self):
         return self.test_mode == "playback"
 
+    def get_env(self, envName, default):
+        val = os.environ.get(envName, default)
+        if val.startswith('"') and val.endswith('"'):
+            val = val[1:-1]
+        return val
+
     def create(self, config):
-        client_id = os.environ.get("AZURE_CLIENT_ID", None)
-        secret = os.environ.get("AZURE_CLIENT_SECRET", None)
+        client_id = self.get_env("AZURE_CLIENT_ID", None)
+        secret = self.get_env("AZURE_CLIENT_SECRET", None)
 
         resourceGroup = config['resource_group']
         clusterName = config['cluster_name']
@@ -47,7 +53,7 @@ class get_aks:
     def create_mgmt_client(self, client_class, **kwargs):
         subscription_id = None
         # if self.is_live:
-        subscription_id = os.environ.get("AZURE_SUBSCRIPTION_ID", None)
+        subscription_id = self.get_env("AZURE_SUBSCRIPTION_ID", None)
         # if not subscription_id:
         #    subscription_id = self.settings.SUBSCRIPTION_ID
 
@@ -58,10 +64,11 @@ class get_aks:
         )
 
     def create_basic_client(self, client_class, **kwargs):
-        tenant_id = os.environ.get("AZURE_TENANT_ID", None)
-        client_id = os.environ.get("AZURE_CLIENT_ID", None)
-        secret = os.environ.get("AZURE_CLIENT_SECRET", None)
+        tenant_id = self.get_env("AZURE_TENANT_ID", None)
+        client_id = self.get_env("AZURE_CLIENT_ID", None)
+        secret = self.get_env("AZURE_CLIENT_SECRET", None)
 
+        print(client_id, tenant_id, secret)
         if tenant_id and client_id and secret and self.is_live:
             from msrestazure.azure_active_directory import ServicePrincipalCredentials
             credentials = ServicePrincipalCredentials(
@@ -71,7 +78,7 @@ class get_aks:
             )
         else:
             credentials = self.settings.get_credentials()
-        subscription_id = os.environ.get("AZURE_SUBSCRIPTION_ID", None)
+        subscription_id = self.get_env("AZURE_SUBSCRIPTION_ID", None)
         # Real client creation
         client = client_class(
             credentials=credentials,
@@ -105,6 +112,7 @@ class get_aks:
                 # "kubernetesVersion": "",
                 "dnsPrefix": dnsPrefix,
                 "agentPoolProfiles": [
+                    # todo:support multiple node pools with different config
                     {
                         "name": "nodepool1",
                                 "count": nodeCount,
