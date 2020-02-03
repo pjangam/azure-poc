@@ -17,5 +17,5 @@ def createCluster():
     print(body)
     # create(body)
     aks = get_aks("a", "Standard_D2s_v3")
-    aks.create(body)
-    return "Hello, World!"
+    status = aks.create(body)
+    return status

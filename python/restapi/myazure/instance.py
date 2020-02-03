@@ -104,22 +104,28 @@ def main():
             waiting = False
         time.sleep(1)
 
-    # create VM
-    vm_name = name
-    vm_size = 'Standard_B1s'
-    publisher = 'CoreOS'
-    offer = 'CoreOS'
-    sku = 'Stable'
-    version = 'latest'
-    username = 'azure'
-    password = hkn.haikunate(delimiter=',') # creates random password
-    print('password = ' + password)
-    print('Creating VM: ' + vm_name)
-    rmreturn = azurerm.create_vm(access_token, subscription_id, rgname, vm_name, vm_size,
-                                 publisher, offer, sku, version, nic_id, location,
-                                 username=username, password=password)
-    print(rmreturn)
-    print(json.dumps(rmreturn.json(), sort_keys=False, indent=2, separators=(',', ': ')))
+    # # create VM
+    # vm_name = name
+    # vm_size = 'Standard_B1s'
+    # publisher = 'CoreOS'
+    # offer = 'CoreOS'
+    # sku = 'Stable'
+    # version = 'latest'
+    # username = 'azure'
+    # password = hkn.haikunate(delimiter=',') # creates random password
+    # print('password = ' + password)
+    # print('Creating VM: ' + vm_name)
+    # rmreturn = azurerm.create_vm(access_token, subscription_id, rgname, vm_name, vm_size,
+    #                              publisher, offer, sku, version, nic_id, location,
+    #                              username=username, password=password)
+    # print(rmreturn)
+    # print(json.dumps(rmreturn.json(), sort_keys=False, indent=2, separators=(',', ': ')))
+
+    #create aks
+    print("####################aks###############")
+    aks=azurerm.create_container_service(access_token,subscription_id,rgname,name+"container_service",1,'Standard_D2s_v3','hello','hello','ubuntu','West US 2')
+    print(aks)
+    print(json.dumps(aks.json(), sort_keys=False, indent=2, separators=(',', ': ')))
 
 if __name__ == "__main__":
     main()

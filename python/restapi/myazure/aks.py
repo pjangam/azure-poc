@@ -15,43 +15,50 @@ class get_aks:
         return self.test_mode == "playback"
 
     def create(self, config):
-        self.cs_client.container_services.create_or_update(
+        client_id = os.environ.get("AZURE_CLIENT_ID", None)
+        secret = os.environ.get("AZURE_CLIENT_SECRET", None)
+        asyncCreate = self.cs_client.container_services.create_or_update(
             config['resource_group'],
             config['container_name'],
             {
                 'location': config['location'],
                 "orchestrator_profile": {
-                    "orchestrator_type": "DCOS"
+                    "orchestrator_type": "Kubernetes"
                 },
                 "master_profile": {
                     "count": 1,
                     "dns_prefix": "MasterPrefixTest",
-                    "vm_size": "standard_d2_v2"
+                    "vm_size": "Standard_D2s_v3"
                 },
                 "agent_pool_profiles": [{
                     "name": "agentpool0",
                     "count": 3,
-                    "vm_size": "Standard_A2_v2",
-                    # "dns_prefix": "AgentPrefixTest" - Optional in latest version
+                    "vm_size": "Standard_D2s_v3",
+                    "dns_prefix": "AgentPrefixTest"  # - Optional in latest version
                 }],
                 "linux_profile": {
                     "admin_username": "acslinuxadmin",
                     "ssh": {
                         "public_keys": [{
-                            "key_data": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAlj9UC6+57XWVu0fd6zqXa256EU9EZdoLGE3TqdZqu9fvUvLQOX2G0d5DmFhDCyTmWLQUx3/ONQ9RotYmHGymBIPQcpx43nnxsuihAILcpGZ5NjCj4IOYnmhdULxN4ti7k00S+udqokrRYpmwt0N4NA4VT9cN+7uJDL8Opqa1FYu0CT/RqSW+3aoQ0nfGj11axoxM37FuOMZ/c7mBSxvuI9NsDmcDQOUmPXjlgNlxrLzf6VcjxnJh4AO83zbyLok37mW/C7CuNK4WowjPO1Ix2kqRHRxBrzxYZ9xqZPc8GpFTw/dxJEYdJ3xlitbOoBoDgrL5gSITv6ESlNqjPk6kHQ== azureuser@linuxvm"
+                            "key_data": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWM58od7yvDBt+FYBr1ZPKIwKv50KR7SDDPA4nDqfxdLSwa1dDgHPnI0MuqJqJ1AECtgXHy+EbMf6yUJwPe8T3EZlNT43880FJfbcgalvP3AyxCmR332Oya1XW/8FtXB0+5vH//V0RdXV3NwWIkTfB8Ndkk6dEL8dXpaYqhoa8vam6mtLejxZ/qy19Cc0xgi0a5S2b4VJ3R4NNQuLsIqnLIxgHshAya9l9HejKbQXxReFlJgMHt/BcDiOjv8rPr98KDm5viKaT9v2ws+cAF/x3fnOvd8R41e5I7GaJfKhNtm4Dc0QJ7ip8l2DpJlyveeFqX0an69W7Ty3lvFulUIYz pramodjangam@Pramods-MacBook-Pro.local"
                         }]
                     }
                 },
-            },
+                "servicePrincipalProfile": {
+                    "secret": secret,
+                    "clientId": client_id
+                }
+            }
         )
-        print("hi")
-        return "bye"
+        container = asyncCreate.result()
+        print(container)
+        return container.provisioning_state
 
     def create_mgmt_client(self, client_class, **kwargs):
         subscription_id = None
-        #if self.is_live:
+        # if self.is_live:
         subscription_id = os.environ.get("AZURE_SUBSCRIPTION_ID", None)
-        #if not subscription_id:
+        # if not subscription_id:
         #    subscription_id = self.settings.SUBSCRIPTION_ID
 
         return self.create_basic_client(
