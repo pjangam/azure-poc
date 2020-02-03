@@ -49,10 +49,10 @@ class get_aks:
 
     def create_mgmt_client(self, client_class, **kwargs):
         subscription_id = None
-        if self.is_live:
-            subscription_id = os.environ.get("AZURE_SUBSCRIPTION_ID", None)
-        if not subscription_id:
-            subscription_id = self.settings.SUBSCRIPTION_ID
+        #if self.is_live:
+        subscription_id = os.environ.get("AZURE_SUBSCRIPTION_ID", None)
+        #if not subscription_id:
+        #    subscription_id = self.settings.SUBSCRIPTION_ID
 
         return self.create_basic_client(
             client_class,

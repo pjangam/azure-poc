@@ -72,3 +72,4 @@ User.mk
 kubernates/output.txt
 python/restapi/env
 .env
+azurermconfig.json
