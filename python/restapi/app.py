@@ -15,7 +15,6 @@ def getHelp():
 def createCluster():
     body = request.get_json()
     print(body)
-    # create(body)
     aks = get_aks("a", "Standard_D2s_v3")
     status = aks.create(body)
     return status

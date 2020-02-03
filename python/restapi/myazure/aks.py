@@ -17,97 +17,28 @@ class get_aks:
     def create(self, config):
         client_id = os.environ.get("AZURE_CLIENT_ID", None)
         secret = os.environ.get("AZURE_CLIENT_SECRET", None)
-        # asyncCreate = self.cs_client.container_services.create_or_update(
-        #     config['resource_group'],
-        #     config['container_name'],
-        #     {
-        #         'location': config['location'],
-        #         "orchestrator_profile": {
-        #             "orchestrator_type": "Kubernetes"
-        #         },
-        #         "master_profile": {
-        #             "count": 1,
-        #             "dns_prefix": "MasterPrefixTest",
-        #             "vm_size": "Standard_D2s_v3"
-        #         },
-        #         "agent_pool_profiles": [{
-        #             "name": "agentpool0",
-        #             "count": 3,
-        #             "vm_size": "Standard_D2s_v3",
-        #             "dns_prefix": "AgentPrefixTest"  # - Optional in latest version
-        #         }],
-        #         "linux_profile": {
-        #             "admin_username": "acslinuxadmin",
-        #             "ssh": {
-        #                 "public_keys": [{
-        #                     "key_data": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWM58od7yvDBt+FYBr1ZPKIwKv50KR7SDDPA4nDqfxdLSwa1dDgHPnI0MuqJqJ1AECtgXHy+EbMf6yUJwPe8T3EZlNT43880FJfbcgalvP3AyxCmR332Oya1XW/8FtXB0+5vH//V0RdXV3NwWIkTfB8Ndkk6dEL8dXpaYqhoa8vam6mtLejxZ/qy19Cc0xgi0a5S2b4VJ3R4NNQuLsIqnLIxgHshAya9l9HejKbQXxReFlJgMHt/BcDiOjv8rPr98KDm5viKaT9v2ws+cAF/x3fnOvd8R41e5I7GaJfKhNtm4Dc0QJ7ip8l2DpJlyveeFqX0an69W7Ty3lvFulUIYz pramodjangam@Pramods-MacBook-Pro.local"
-        #                 }]
-        #             }
-        #         },
-        #         "servicePrincipalProfile": {
-        #             "secret": secret,
-        #             "clientId": client_id
-        #         }
-        #     }
-        # )
+
+        resourceGroup = config['resource_group']
+        clusterName = config['cluster_name']
+        location = config['location']
+        dnsPrefix = config['dns_prefix']
+        nodeCount = config['node_count']
+        vmSize = config["size"]
+        osType = 'Linux'
+        if "os" in config:
+            osType = config["os"]
+        lastNum = min(3, nodeCount) + 1
+        availabilityZones = list(map(lambda x: str(x), range(1, lastNum)))
+
+        publicKey = config["public_key"]
+
+        config1 = self.get_config(resourceGroup, clusterName, location, dnsPrefix,
+                                  nodeCount, vmSize, osType, availabilityZones, publicKey, client_id, secret)
 
         asyncCreate = self.cs_client.managed_clusters.create_or_update(
-            config['resource_group'],
-            config['container_name'],
-            {
-                "location": config['location'],
-                # "tags": {
-                #     "tier": "production",
-                #     "archv2": ""
-                # },
-                "properties": {
-                    # "kubernetesVersion": "",
-                    "dnsPrefix": "dnsprefix1",
-                    "agentPoolProfiles": [
-                        {
-                            "name": "nodepool1",
-                            "count": 3,
-                            "vmSize": "Standard_D2s_v3",
-                            "osType": "Linux",
-                            "type": "VirtualMachineScaleSets",
-                            "availabilityZones": [
-                                "1",
-                                "2",
-                                "3"
-                            ],
-                            "enableNodePublicIP": False
-                        }
-                    ],
-                    "linuxProfile": {
-                        "adminUsername": "azureuser",
-                        "ssh": {
-                            "publicKeys": [
-                                {
-                                    "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWM58od7yvDBt+FYBr1ZPKIwKv50KR7SDDPA4nDqfxdLSwa1dDgHPnI0MuqJqJ1AECtgXHy+EbMf6yUJwPe8T3EZlNT43880FJfbcgalvP3AyxCmR332Oya1XW/8FtXB0+5vH//V0RdXV3NwWIkTfB8Ndkk6dEL8dXpaYqhoa8vam6mtLejxZ/qy19Cc0xgi0a5S2b4VJ3R4NNQuLsIqnLIxgHshAya9l9HejKbQXxReFlJgMHt/BcDiOjv8rPr98KDm5viKaT9v2ws+cAF/x3fnOvd8R41e5I7GaJfKhNtm4Dc0QJ7ip8l2DpJlyveeFqX0an69W7Ty3lvFulUIYz pramodjangam@Pramods-MacBook-Pro.local"
-                                }
-                            ]
-                        }
-                    },
-                    "networkProfile": {
-                        "loadBalancerSku": "standard",
-                        "outboundType": "loadBalancer",
-                        "loadBalancerProfile": {
-                            "managedOutboundIPs": {
-                                "count": 2
-                            }
-                        }
-                    },
-                    
-                    "servicePrincipalProfile": {
-                        "clientId": client_id,
-                        "secret": secret
-                    },
-                    "addonProfiles": {},
-                    "enableRBAC": True,
-                    "diskEncryptionSetID": "/subscriptions/subid1/resourceGroups/rg1/providers/Microsoft.Compute/diskEncryptionSets/des",
-                    "enablePodSecurityPolicy": False
-                }
-            }
+            resourceGroup,
+            clusterName,
+            config1
         )
         container = asyncCreate.result()
         print(container)
@@ -162,3 +93,55 @@ class get_aks:
                 config_file = None
             is_live._cache = TestConfig(config_file=config_file).record_mode
         return is_live._cache
+
+    def get_config(self, resourceGroup, clusterName, location, dnsPrefix, nodeCount, vmSize, osType, availabilityZones, publicKey, client_id, secret):
+        return {
+            "location": location,
+            # "tags": {
+            #     "tier": "production",
+            #     "archv2": ""
+            # },
+            "properties": {
+                # "kubernetesVersion": "",
+                "dnsPrefix": dnsPrefix,
+                "agentPoolProfiles": [
+                    {
+                        "name": "nodepool1",
+                                "count": nodeCount,
+                                "vmSize": vmSize,
+                                "osType": osType,
+                                "type": "VirtualMachineScaleSets",
+                                "availabilityZones": availabilityZones,
+                                "enableNodePublicIP": False
+                    }
+                ],
+                "linuxProfile": {
+                    "adminUsername": "azureuser",
+                    "ssh": {
+                        "publicKeys": [
+                            {
+                                "keyData": publicKey
+                            }
+                        ]
+                    }
+                },
+                "networkProfile": {
+                    "loadBalancerSku": "standard",
+                    "outboundType": "loadBalancer",
+                    "loadBalancerProfile": {
+                        "managedOutboundIPs": {
+                                    "count": 2
+                        }
+                    }
+                },
+
+                "servicePrincipalProfile": {
+                    "clientId": client_id,
+                    "secret": secret
+                },
+                "addonProfiles": {},
+                "enableRBAC": True,
+                "diskEncryptionSetID": "/subscriptions/subid1/resourceGroups/rg1/providers/Microsoft.Compute/diskEncryptionSets/des",
+                "enablePodSecurityPolicy": False
+            }
+        }
