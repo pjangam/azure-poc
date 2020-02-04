@@ -51,6 +51,17 @@ def get_agent_profiles(node_count, vm_size, os_type, availability_zones):
     ]
 
 
+class AksConfig:
+    def __init__(self, dictionary):
+        self.resource_group = dictionary["resource_group"]
+        self.cluster_name = dictionary["cluster_name"]
+        self.location = dictionary["location"]
+        self.dns_prefix = dictionary["dns_prefix"]
+        self.node_count = dictionary["node_count"]
+        self.size = dictionary["size"]
+        self.public_key = dictionary["public_key"]
+
+
 class AksClient:
     def __init__(self):
         self.test_mode = 'None'.lower()
@@ -63,19 +74,13 @@ class AksClient:
             azure.mgmt.containerservice.ContainerServiceClient
         )
 
-    def is_playback(self):
-        return self.test_mode == "playback"
-
-    def create(self, config):
-        resource_group = config['resource_group']
-        cluster_name = config['cluster_name']
-        location = config['location']
-        dns_prefix = config['dns_prefix']
-        node_count: int = config['node_count']
-        vm_size = config["size"]
-        os_type = 'Linux'
+    def get_az(self, node_count):
         last_num = min(3, node_count) + 1
         availability_zones = list(map(lambda x: str(x), range(1, last_num)))
+        return availability_zones
+
+    def create(self, config: AksConfig):
+        os_type = 'Linux'
         if "os" in config:
             os_type = config["os"]
         tags = None
@@ -83,13 +88,12 @@ class AksClient:
             tags = config['tags']
 
         public_key = config["public_key"]
-
-        config1 = self.get_config(location, dns_prefix,
-                                  node_count, vm_size, os_type, availability_zones, public_key, tags)
+        availability_zones = self.get_az(config.node_count)
+        config1 = self.get_config(config, os_type, availability_zones, public_key, tags)
 
         async_create = self.cs_client.managed_clusters.create_or_update(
-            resource_group,
-            cluster_name,
+            config.resource_group,
+            config.cluster_name,
             config1
         )
         container = async_create.result()
@@ -120,23 +124,21 @@ class AksClient:
             subscription_id=subscription_id
             # **kwargs
         )
-        if self.is_playback():
-            client.config.long_running_operation_timeout = 0
         client.config.enable_http_logger = True
         return client
 
-    def get_config(self, location, dns_prefix, node_count, vm_size, os_type, availability_zones, public_key, tags):
+    def get_config(self, config: AksConfig, os_type, availability_zones, public_key, tags):
         return {
-            "location": location,
+            "location": config.location,
             "tags": tags,
-            "properties": self.get_properties(dns_prefix, node_count, vm_size, os_type, availability_zones, public_key)
+            "properties": self.get_properties(config, os_type, availability_zones, public_key)
         }
 
-    def get_properties(self, dns_prefix, node_count, vm_size, os_type, availability_zones, public_key):
+    def get_properties(self, config, os_type, availability_zones, public_key):
         return {
             # "kubernetesVersion": "",
-            "dnsPrefix": dns_prefix,
-            "agentPoolProfiles": get_agent_profiles(node_count, vm_size, os_type, availability_zones),
+            "dnsPrefix": config.dns_prefix,
+            "agentPoolProfiles": get_agent_profiles(config.node_count, config.vm_size, os_type, availability_zones),
             "linuxProfile": get_linux_profile(public_key),
             "networkProfile": get_network_profile(),
 
