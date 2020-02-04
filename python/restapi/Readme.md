@@ -42,7 +42,7 @@ run
 
 TODO:
 
-- [ ] Fix authentication issue at azure api
 - [ ] Test cases
 - [ ] refactor and modularize
 - [ ] create cluster instead of single container
+- [ ] Multiple agent pools

@@ -1,12 +1,64 @@
-from azure.mgmt.containerservice import ContainerServiceClient
-from azure.mgmt.deploymentmanager.operations import ArtifactSourcesOperations
-import azure.mgmt.containerservice
 import os
+import azure.mgmt.containerservice
 
 
-class get_aks:
-    def __init__(self, credentials, subscriptionId):
+def get_env(env_name):
+    val: str = os.environ.get(env_name)
+    if not val:
+        raise EnvironmentError(f'{env_name} is not set.')
+    if val.startswith('"') and val.endswith('"'):
+        val = val[1:-1]
+    return val
+
+
+def get_network_profile():
+    return {
+        "loadBalancerSku": "standard",
+        "outboundType": "loadBalancer",
+        "loadBalancerProfile": {
+            "managedOutboundIPs": {
+                "count": 2
+            }
+        }
+    }
+
+
+def get_linux_profile(public_key):
+    return {
+        "adminUsername": "azureuser",
+        "ssh": {
+            "publicKeys": [
+                {
+                    "keyData": public_key
+                }
+            ]
+        }
+    }
+
+
+def get_agent_profiles(node_count, vm_size, os_type, availability_zones):
+    return [
+        # todo:support multiple node pools with different config
+        {
+            "name": "dfagentpool",
+            "count": node_count,
+            "vmSize": vm_size,
+            "osType": os_type,
+            "type": "VirtualMachineScaleSets",
+            "availabilityZones": availability_zones,
+            "enableNodePublicIP": False
+        }
+    ]
+
+
+class AksClient:
+    def __init__(self):
         self.test_mode = 'None'.lower()
+        self.subscription_id = get_env("AZURE_SUBSCRIPTION_ID")
+        self.client_id = get_env("AZURE_CLIENT_ID")
+        self.secret = get_env("AZURE_CLIENT_SECRET")
+        self.tenant_id = get_env("AZURE_TENANT_ID")
+
         self.cs_client = self.create_mgmt_client(
             azure.mgmt.containerservice.ContainerServiceClient
         )
@@ -14,72 +66,55 @@ class get_aks:
     def is_playback(self):
         return self.test_mode == "playback"
 
-    def get_env(self, envName, default):
-        val = os.environ.get(envName, default)
-        if val.startswith('"') and val.endswith('"'):
-            val = val[1:-1]
-        return val
-
     def create(self, config):
-        client_id = self.get_env("AZURE_CLIENT_ID", None)
-        secret = self.get_env("AZURE_CLIENT_SECRET", None)
-
-        resourceGroup = config['resource_group']
-        clusterName = config['cluster_name']
+        resource_group = config['resource_group']
+        cluster_name = config['cluster_name']
         location = config['location']
-        dnsPrefix = config['dns_prefix']
-        nodeCount = config['node_count']
-        vmSize = config["size"]
-        osType = 'Linux'
+        dns_prefix = config['dns_prefix']
+        node_count: int = config['node_count']
+        vm_size = config["size"]
+        os_type = 'Linux'
+        last_num = min(3, node_count) + 1
+        availability_zones = list(map(lambda x: str(x), range(1, last_num)))
         if "os" in config:
-            osType = config["os"]
-        lastNum = min(3, nodeCount) + 1
-        availabilityZones = list(map(lambda x: str(x), range(1, lastNum)))
+            os_type = config["os"]
+        tags = None
+        if 'tags' in config:
+            tags = config['tags']
 
-        publicKey = config["public_key"]
+        public_key = config["public_key"]
 
-        config1 = self.get_config(resourceGroup, clusterName, location, dnsPrefix,
-                                  nodeCount, vmSize, osType, availabilityZones, publicKey, client_id, secret)
+        config1 = self.get_config(location, dns_prefix,
+                                  node_count, vm_size, os_type, availability_zones, public_key, tags)
 
-        asyncCreate = self.cs_client.managed_clusters.create_or_update(
-            resourceGroup,
-            clusterName,
+        async_create = self.cs_client.managed_clusters.create_or_update(
+            resource_group,
+            cluster_name,
             config1
         )
-        container = asyncCreate.result()
+        container = async_create.result()
         print(container)
         return container.provisioning_state
 
-    def create_mgmt_client(self, client_class, **kwargs):
-        subscription_id = None
-        # if self.is_live:
-        subscription_id = self.get_env("AZURE_SUBSCRIPTION_ID", None)
-        # if not subscription_id:
-        #    subscription_id = self.settings.SUBSCRIPTION_ID
-
+    def create_mgmt_client(self, client_class, tags=None, **kwargs):
         return self.create_basic_client(
             client_class,
-            subscription_id=subscription_id,
+            tags,
+            subscription_id=self.subscription_id,
             **kwargs
         )
 
-    def create_basic_client(self, client_class, **kwargs):
-        tenant_id = self.get_env("AZURE_TENANT_ID", None)
-        client_id = self.get_env("AZURE_CLIENT_ID", None)
-        secret = self.get_env("AZURE_CLIENT_SECRET", None)
+    # noinspection PyUnusedLocal
+    def create_basic_client(self, client_class, tags=None, **kwargs):
 
-        print(client_id, tenant_id, secret)
-        if tenant_id and client_id and secret and self.is_live:
-            from msrestazure.azure_active_directory import ServicePrincipalCredentials
-            credentials = ServicePrincipalCredentials(
-                tenant=tenant_id,
-                client_id=client_id,
-                secret=secret
-            )
-        else:
-            credentials = self.settings.get_credentials()
-        subscription_id = self.get_env("AZURE_SUBSCRIPTION_ID", None)
+        from msrestazure.azure_active_directory import ServicePrincipalCredentials
+        credentials = ServicePrincipalCredentials(
+            tenant=self.tenant_id,
+            client_id=self.client_id,
+            secret=self.secret
+        )
         # Real client creation
+        subscription_id = self.subscription_id
         client = client_class(
             credentials=credentials,
             subscription_id=subscription_id
@@ -90,66 +125,31 @@ class get_aks:
         client.config.enable_http_logger = True
         return client
 
-    def is_live():
-        """A module version of is_live, that could be used in pytest marker.
-        """
-        if not hasattr(is_live, '_cache'):
-            config_file = os.path.join(
-                os.path.dirname(__file__), TEST_SETTING_FILENAME)
-            if not os.path.exists(config_file):
-                config_file = None
-            is_live._cache = TestConfig(config_file=config_file).record_mode
-        return is_live._cache
-
-    def get_config(self, resourceGroup, clusterName, location, dnsPrefix, nodeCount, vmSize, osType, availabilityZones, publicKey, client_id, secret):
+    def get_config(self, location, dns_prefix, node_count, vm_size, os_type, availability_zones, public_key, tags):
         return {
             "location": location,
-            # "tags": {
-            #     "tier": "production",
-            #     "archv2": ""
-            # },
-            "properties": {
-                # "kubernetesVersion": "",
-                "dnsPrefix": dnsPrefix,
-                "agentPoolProfiles": [
-                    # todo:support multiple node pools with different config
-                    {
-                        "name": "nodepool1",
-                                "count": nodeCount,
-                                "vmSize": vmSize,
-                                "osType": osType,
-                                "type": "VirtualMachineScaleSets",
-                                "availabilityZones": availabilityZones,
-                                "enableNodePublicIP": False
-                    }
-                ],
-                "linuxProfile": {
-                    "adminUsername": "azureuser",
-                    "ssh": {
-                        "publicKeys": [
-                            {
-                                "keyData": publicKey
-                            }
-                        ]
-                    }
-                },
-                "networkProfile": {
-                    "loadBalancerSku": "standard",
-                    "outboundType": "loadBalancer",
-                    "loadBalancerProfile": {
-                        "managedOutboundIPs": {
-                                    "count": 2
-                        }
-                    }
-                },
+            "tags": tags,
+            "properties": self.get_properties(dns_prefix, node_count, vm_size, os_type, availability_zones, public_key)
+        }
 
-                "servicePrincipalProfile": {
-                    "clientId": client_id,
-                    "secret": secret
-                },
-                "addonProfiles": {},
-                "enableRBAC": True,
-                "diskEncryptionSetID": "/subscriptions/subid1/resourceGroups/rg1/providers/Microsoft.Compute/diskEncryptionSets/des",
-                "enablePodSecurityPolicy": False
-            }
+    def get_properties(self, dns_prefix, node_count, vm_size, os_type, availability_zones, public_key):
+        return {
+            # "kubernetesVersion": "",
+            "dnsPrefix": dns_prefix,
+            "agentPoolProfiles": get_agent_profiles(node_count, vm_size, os_type, availability_zones),
+            "linuxProfile": get_linux_profile(public_key),
+            "networkProfile": get_network_profile(),
+
+            "servicePrincipalProfile": self.get_service_principle(),
+            "addonProfiles": {},
+            "enableRBAC": True,
+            "diskEncryptionSetID": "/subscriptions/subid1/resourceGroups/rg1/providers/Microsoft.Compute"
+                                   "/diskEncryptionSets/des",
+            "enablePodSecurityPolicy": False
+        }
+
+    def get_service_principle(self):
+        return {
+            "clientId": self.client_id,
+            "secret": self.secret
         }

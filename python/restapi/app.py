@@ -1,18 +1,19 @@
 import os
 
 from flask import Flask, request
-from myazure.aks import get_aks
+from myazure.aks import AksClient
+
 app = Flask(__name__)
 
 
 @app.route("/")
-def getHelp():
+def get_help():
     return "TBD help page"
 
 
 @app.route("/createcluster", methods=["POST"])
-def createCluster():
+def create_cluster():
     body = request.get_json()
-    aks = get_aks("a", "Standard_D2s_v3")
+    aks = AksClient()
     status = aks.create(body)
     return status
