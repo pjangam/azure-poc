@@ -38,7 +38,16 @@ run
 `make run`
 
 
+## Tests:
+```
+#E2E
 
+newman run aks_poc.postman_collection.json --folder infra_apis
+
+#unit
+
+python3 test_aks.py
+```
 
 TODO:
 
@@ -46,3 +55,9 @@ TODO:
 - [ ] refactor and modularize
 - [ ] create cluster instead of single container
 - [ ] Multiple agent pools
+- [ ] Handle  409 Client Error: Conflict for url
+- [x] C
+- [ ] R
+- [ ] U
+- [ ] D
+- [ ] 

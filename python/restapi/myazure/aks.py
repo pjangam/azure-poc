@@ -59,7 +59,19 @@ class AksConfig:
         self.dns_prefix = dictionary["dns_prefix"]
         self.node_count = dictionary["node_count"]
         self.size = dictionary["size"]
-        self.public_key = dictionary["public_key"]
+        # optional fields
+        self.os_type = 'Linux'
+        if "os" in dictionary:
+            self.os_type = dictionary["os"]
+        self.tags = None
+        if 'tags' in dictionary:
+            self.tags = dictionary['tags']
+
+
+def get_az(node_count):
+    last_num = min(3, node_count) + 1
+    availability_zones = list(map(lambda x: str(x), range(1, last_num)))
+    return availability_zones
 
 
 class AksClient:
@@ -69,36 +81,30 @@ class AksClient:
         self.client_id = get_env("AZURE_CLIENT_ID")
         self.secret = get_env("AZURE_CLIENT_SECRET")
         self.tenant_id = get_env("AZURE_TENANT_ID")
+        self.public_key = get_env("PUBLIC_KEY")
 
         self.cs_client = self.create_mgmt_client(
             azure.mgmt.containerservice.ContainerServiceClient
-        )
-
-    def get_az(self, node_count):
-        last_num = min(3, node_count) + 1
-        availability_zones = list(map(lambda x: str(x), range(1, last_num)))
-        return availability_zones
+        )  # .managed_cluster
 
     def create(self, config: AksConfig):
-        os_type = 'Linux'
-        if "os" in config:
-            os_type = config["os"]
-        tags = None
-        if 'tags' in config:
-            tags = config['tags']
-
-        public_key = config["public_key"]
-        availability_zones = self.get_az(config.node_count)
-        config1 = self.get_config(config, os_type, availability_zones, public_key, tags)
+        config_azure_format = self.get_config(config)
 
         async_create = self.cs_client.managed_clusters.create_or_update(
             config.resource_group,
             config.cluster_name,
-            config1
+            config_azure_format
         )
+        # wait for creation succeed
+        # TODO: try to get polling status to console/ response
         container = async_create.result()
         print(container)
         return container.provisioning_state
+
+    def delete(self, resource_group, cluster_name):
+        async_action = self.cs_client.managed_clusters.delete(resource_group, cluster_name)
+        async_action.result()
+        return "status"
 
     def create_mgmt_client(self, client_class, tags=None, **kwargs):
         return self.create_basic_client(
@@ -110,7 +116,6 @@ class AksClient:
 
     # noinspection PyUnusedLocal
     def create_basic_client(self, client_class, tags=None, **kwargs):
-
         from msrestazure.azure_active_directory import ServicePrincipalCredentials
         credentials = ServicePrincipalCredentials(
             tenant=self.tenant_id,
@@ -127,19 +132,21 @@ class AksClient:
         client.config.enable_http_logger = True
         return client
 
-    def get_config(self, config: AksConfig, os_type, availability_zones, public_key, tags):
+    def get_config(self, config: AksConfig):
+        availability_zones = get_az(config.node_count)
         return {
             "location": config.location,
-            "tags": tags,
-            "properties": self.get_properties(config, os_type, availability_zones, public_key)
+            "tags": config.tags,
+            "properties": self.get_properties(config, availability_zones)
         }
 
-    def get_properties(self, config, os_type, availability_zones, public_key):
+    def get_properties(self, config, availability_zones):
         return {
             # "kubernetesVersion": "",
             "dnsPrefix": config.dns_prefix,
-            "agentPoolProfiles": get_agent_profiles(config.node_count, config.vm_size, os_type, availability_zones),
-            "linuxProfile": get_linux_profile(public_key),
+            "agentPoolProfiles": get_agent_profiles(config.node_count, config.size, config.os_type,
+                                                    availability_zones),
+            "linuxProfile": get_linux_profile(self.public_key),
             "networkProfile": get_network_profile(),
 
             "servicePrincipalProfile": self.get_service_principle(),
