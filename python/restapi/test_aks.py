@@ -1,15 +1,47 @@
 import unittest
 from unittest import mock
+from unittest.mock import patch
+from pytest_dotenv import plugin
 
 from myazure.aks import AksClient, AksConfig
-from unittest.mock import MagicMock, patch
-import os
-from pytest_dotenv import plugin
-import os
-import azure.mgmt.containerservice
+
+
+def get_mock_enviorn():
+    return {'AZURE_CLIENT_ID': 'xyz',
+            'AZURE_CLIENT_SECRET': 'xyz',
+            'AZURE_TENANT_ID': 'xyz',
+            'AZURE_SUBSCRIPTION_ID': 'xyz',
+            'PUBLIC_KEY': "xyz"}
+
+
+def get_request_config_dict():
+    config = {
+        "resource_group": "firstapp-resources",
+        "cluster_name": "test-python-container-pj2",
+        "location": "West US 2",
+        "dns_prefix": "dnsPrefix",
+        "node_count": 2,
+        "size": "Standard_D2s_v3"
+    }
+    return config
+
+
+def to_obj(aks_client_result):
+    aks_client_result_obj = type('', (object,), aks_client_result)()
+    return aks_client_result_obj
+
+
+def get_request_config():
+    config = get_request_config_dict()
+    aks_config = AksConfig(config)
+    return aks_config
 
 
 class TestStringMethods(unittest.TestCase):
+
+    def setUp(self) -> None:
+        # mock.patch.dict('os.environ', get_mock_enviorn())
+        plugin.load_dotenv()
 
     # def test_e2e(self):
     #     plugin.load_dotenv()
@@ -36,7 +68,7 @@ class TestStringMethods(unittest.TestCase):
     #     self.assertEqual(status, "Succeeded")
 
     def test_parse_config(self):
-        config = self.get_request_config_dict()
+        config = get_request_config_dict()
         aks_config = AksConfig(config)
         self.assertEqual(config['resource_group'], aks_config.resource_group)
         for keys in config.keys():
@@ -48,40 +80,24 @@ class TestStringMethods(unittest.TestCase):
 
     @patch('azure.mgmt.containerservice.ContainerServiceClient')
     @patch('msrestazure.azure_active_directory.ServicePrincipalCredentials')
-    def test_mockdata(self, mock_service_principle, mock_aks_client):
+    def test_givenAksCreateReturnsSucceeded_whenUserCallCreate_thenStatusSuccessReturned(
+            self, mock_service_principle, mock_aks_client
+    ):
+        # with mock.patch.dict('os.environ', get_mock_enviorn()):
         print(mock_service_principle)
-        aks_config = self.get_request_config()
-        mock_instance = mock_aks_client.return_value
-        x = type('', (object,), {"provisioning_state": "Succeeded"})()
-        mock_instance.managed_clusters.create_or_update.return_value.result.return_value = x
-        with mock.patch.dict('os.environ', self.get_mock_enviorn()):
-            aks_client = AksClient()
-            status = aks_client.create(aks_config)
-            self.assertEqual("Succeeded", status)
 
-    # region helper methods
-    def get_request_config(self):
-        config = self.get_request_config_dict()
-        aks_config = AksConfig(config)
-        return aks_config
+        # Given
 
-    def get_mock_enviorn(self):
-        return {'AZURE_CLIENT_ID': 'xyz',
-                'AZURE_CLIENT_SECRET': 'xyz',
-                'AZURE_TENANT_ID': 'xyz',
-                'AZURE_SUBSCRIPTION_ID': 'xyz',
-                'PUBLIC_KEY': "xyz"}
-
-    def get_request_config_dict(self):
-        config = {
-            "resource_group": "firstapp-resources",
-            "cluster_name": "test-python-container-pj2",
-            "location": "West US 2",
-            "dns_prefix": "dnsPrefix",
-            "node_count": 2,
-            "size": "Standard_D2s_v3"
-        }
-        return config
+        mock_aks_client.return_value \
+            .managed_clusters \
+            .create_or_update.return_value \
+            .result.return_value = to_obj({"provisioning_state": "Succeeded"})
+        aks_config = get_request_config()
+        aks_client = AksClient()
+        # When
+        status = aks_client.create(aks_config)
+        # Then
+        self.assertEqual("Succeeded", status)
 
 
 if __name__ == '__main__':

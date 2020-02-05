@@ -6,6 +6,7 @@
 - AZURE_CLIENT_SECRET
 - AZURE_TENANT_ID
 - AZURE_SUBSCRIPTION_ID
+- PUBLIC_KEY
 
 ## How to run
 
@@ -59,5 +60,4 @@ TODO:
 - [x] C
 - [ ] R
 - [ ] U
-- [ ] D
-- [ ] 
+- [x] D
