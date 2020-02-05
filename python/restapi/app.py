@@ -21,7 +21,7 @@ def get_help():
 @app.route("/clusters/<resource_group>/<cluster_name>", methods=["POST"])
 def create_cluster(resource_group, cluster_name):
     rid = uuid.uuid4()
-    logging.debug(f"received {rid} create: {resource_group}/{cluster_name}")
+    logging.info(f"received {rid} create: {resource_group}/{cluster_name}")
 
     body = request.get_json()
     body["resource_group"] = resource_group
@@ -29,7 +29,7 @@ def create_cluster(resource_group, cluster_name):
     aks_config = AksConfig(body)
     status = aksClient.create(aks_config)
 
-    logging.debug(f"complete {rid} create: {resource_group}/{cluster_name}")
+    logging.info(f"complete {rid} create: {resource_group}/{cluster_name}")
 
     return status
 

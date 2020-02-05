@@ -1,5 +1,6 @@
 import os
 import azure.mgmt.containerservice
+import msrestazure.azure_active_directory
 
 
 def get_env(env_name):
@@ -83,9 +84,10 @@ class AksClient:
         self.tenant_id = get_env("AZURE_TENANT_ID")
         self.public_key = get_env("PUBLIC_KEY")
 
-        self.cs_client = self.create_mgmt_client(
+        cs_client1 = self.create_mgmt_client(
             azure.mgmt.containerservice.ContainerServiceClient
-        )  # .managed_cluster
+        )
+        self.cs_client = cs_client1
 
     def create(self, config: AksConfig):
         config_azure_format = self.get_config(config)
@@ -98,7 +100,6 @@ class AksClient:
         # wait for creation succeed
         # TODO: try to get polling status to console/ response
         container = async_create.result()
-        print(container)
         return container.provisioning_state
 
     def delete(self, resource_group, cluster_name):
@@ -116,8 +117,7 @@ class AksClient:
 
     # noinspection PyUnusedLocal
     def create_basic_client(self, client_class, tags=None, **kwargs):
-        from msrestazure.azure_active_directory import ServicePrincipalCredentials
-        credentials = ServicePrincipalCredentials(
+        credentials = msrestazure.azure_active_directory.ServicePrincipalCredentials(
             tenant=self.tenant_id,
             client_id=self.client_id,
             secret=self.secret
