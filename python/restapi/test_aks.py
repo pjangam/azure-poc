@@ -1,12 +1,10 @@
 import unittest
-from unittest import mock
 from unittest.mock import patch
 from pytest_dotenv import plugin
-
 from myazure.aks import AksClient, AksConfig
 
 
-def get_mock_enviorn():
+def get_mock_environment():
     return {'AZURE_CLIENT_ID': 'xyz',
             'AZURE_CLIENT_SECRET': 'xyz',
             'AZURE_TENANT_ID': 'xyz',
@@ -40,8 +38,81 @@ def get_request_config():
 class TestStringMethods(unittest.TestCase):
 
     def setUp(self) -> None:
-        # mock.patch.dict('os.environ', get_mock_enviorn())
         plugin.load_dotenv()
+
+    def test_parse_config(self):
+        config = get_request_config_dict()
+        aks_config = AksConfig(config)
+        self.assertEqual(config['resource_group'], aks_config.resource_group)
+        for keys in config.keys():
+            self.assertTrue(hasattr(aks_config, keys), f'{keys} not present in object"')
+            self.assertEqual(getattr(aks_config, keys), config[keys])
+        for attr in dir(aks_config):
+            if not attr.startswith('__') and attr != 'tags':
+                self.assertIsNotNone(getattr(aks_config, attr), f'{attr} is none but expected to have some value')
+
+    @patch('azure.mgmt.containerservice.ContainerServiceClient')
+    @patch('msrestazure.azure_active_directory.ServicePrincipalCredentials')
+    def test_given_Aks_Create_Returns_Succeeded_when_User_Call_Create_then_Status_Success_Returned(
+            self, mock_service_principle, mock_aks_client
+    ):
+        print(mock_service_principle)
+        # Given
+
+        mock_aks_client.return_value \
+            .managed_clusters \
+            .create_or_update.return_value \
+            .result.return_value = to_obj({"provisioning_state": "Succeeded"})
+        aks_config = get_request_config()
+        aks_client = AksClient()
+        # When
+
+        status = aks_client.create(aks_config)
+        # Then
+
+        self.assertEqual("Succeeded", status)
+
+    @patch('azure.mgmt.containerservice.ContainerServiceClient')
+    @patch('msrestazure.azure_active_directory.ServicePrincipalCredentials')
+    def test_given_Aks_Delete_Returns_Succeeded_when_User_Call_Delete_then_Status_Success_Returned(
+            self, mock_service_principle, mock_aks_client
+    ):
+        print(mock_service_principle)
+        # Given
+
+        mock_aks_client.return_value \
+            .managed_clusters \
+            .delete.return_value \
+            .result.return_value = to_obj({"provisioning_state": "Succeeded"})
+        aks_config = get_request_config()
+        aks_client = AksClient()
+        # When
+
+        status = aks_client.delete('rg_name', 'cluster_name')
+        # Then
+
+        self.assertEqual("Succeeded", status)
+
+    @patch('azure.mgmt.containerservice.ContainerServiceClient')
+    @patch('msrestazure.azure_active_directory.ServicePrincipalCredentials')
+    def test_given_Aks_Read_Returns_Succeeded_when_User_Call_Read_then_Status_Success_Returned(
+            self, mock_service_principle, mock_aks_client
+    ):
+        print(mock_service_principle)
+        # Given
+
+        mock_aks_client.return_value \
+            .managed_clusters \
+            .delete.return_value \
+            .result.return_value = to_obj({"provisioning_state": "Succeeded"})
+        aks_config = get_request_config()
+        aks_client = AksClient()
+        # When
+
+        status = aks_client.get('rg_name', 'cluster_name')
+        # Then
+
+        self.assertEqual("Succeeded", status)
 
     # def test_e2e(self):
     #     plugin.load_dotenv()
@@ -62,42 +133,10 @@ class TestStringMethods(unittest.TestCase):
     #                       "pramodjangam@Pramods-MacBook-Pro.local "
     #     }
     #     try:
-    #         status = client.create(config)
+    #         status = client.get('firstapp-resources', 'test-python-container-pj2')
     #     except Exception as e:
     #         print(e.args[0])
     #     self.assertEqual(status, "Succeeded")
-
-    def test_parse_config(self):
-        config = get_request_config_dict()
-        aks_config = AksConfig(config)
-        self.assertEqual(config['resource_group'], aks_config.resource_group)
-        for keys in config.keys():
-            self.assertTrue(hasattr(aks_config, keys), f'{keys} not present in object"')
-            self.assertEqual(getattr(aks_config, keys), config[keys])
-        for attr in dir(aks_config):
-            if not attr.startswith('__') and attr != 'tags':
-                self.assertIsNotNone(getattr(aks_config, attr), f'{attr} is none but expected to have some value')
-
-    @patch('azure.mgmt.containerservice.ContainerServiceClient')
-    @patch('msrestazure.azure_active_directory.ServicePrincipalCredentials')
-    def test_givenAksCreateReturnsSucceeded_whenUserCallCreate_thenStatusSuccessReturned(
-            self, mock_service_principle, mock_aks_client
-    ):
-        # with mock.patch.dict('os.environ', get_mock_enviorn()):
-        print(mock_service_principle)
-
-        # Given
-
-        mock_aks_client.return_value \
-            .managed_clusters \
-            .create_or_update.return_value \
-            .result.return_value = to_obj({"provisioning_state": "Succeeded"})
-        aks_config = get_request_config()
-        aks_client = AksClient()
-        # When
-        status = aks_client.create(aks_config)
-        # Then
-        self.assertEqual("Succeeded", status)
 
 
 if __name__ == '__main__':

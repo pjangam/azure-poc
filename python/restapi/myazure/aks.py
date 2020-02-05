@@ -102,10 +102,17 @@ class AksClient:
         container = async_create.result()
         return container.provisioning_state
 
+    def get(self, resource_group, cluster_name):
+        async_action = self.cs_client.managed_clusters.get(resource_group, cluster_name)
+        if async_action is not None:
+            return "Succeeded"
+        else:
+            return "Failed"
+
     def delete(self, resource_group, cluster_name):
         async_action = self.cs_client.managed_clusters.delete(resource_group, cluster_name)
         async_action.result()
-        return "status"
+        return "Succeeded"
 
     def create_mgmt_client(self, client_class, tags=None, **kwargs):
         return self.create_basic_client(
