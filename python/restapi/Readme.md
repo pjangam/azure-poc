@@ -52,12 +52,17 @@ python3 test_aks.py
 
 TODO:
 
-- [ ] Test cases
-- [ ] refactor and modularize
-- [ ] create cluster instead of single container
-- [ ] Multiple agent pools
-- [ ] Handle  409 Client Error: Conflict for url
+- [x] Test cases
+- [x] refactor and modularize
+- [x] create cluster instead of single container
+- [x] Multiple agent pools
 - [x] C
-- [ ] R
+- [x] R
 - [ ] U
 - [x] D
+- [ ] Explore vnet creation
+- [ ] Enable autoscaling
+- [ ] deploy helm chart on cluster
+- [ ] Automate .env file creation
+- [ ] create credentials at global level and create resource_group using them
+

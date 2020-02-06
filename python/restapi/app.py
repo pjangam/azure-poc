@@ -48,6 +48,3 @@ def delete_cluster(resource_group, cluster_name):
 def get_cluster(resource_group, cluster_name):
     status = aksClient.get(resource_group, cluster_name)
     return status
-
-
-

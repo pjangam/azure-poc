@@ -43,7 +43,7 @@ def get_agent_profiles(agent_pools):
     result = []
     for agent_pool in agent_pools:
         result.append({
-            "name": "dfagentpool",
+            "name": agent_pool.profile_name,
             "count": agent_pool.node_count,
             "vmSize": agent_pool.size,
             "osType": agent_pool.os_type,
@@ -53,7 +53,6 @@ def get_agent_profiles(agent_pools):
         })
 
     return result
-
 
 
 class AksClient:
@@ -95,16 +94,15 @@ class AksClient:
         async_action.result()
         return "Succeeded"
 
-    def create_mgmt_client(self, client_class, tags=None, **kwargs):
+    def create_mgmt_client(self, client_class, **kwargs):
         return self.create_basic_client(
             client_class,
-            tags,
             subscription_id=self.subscription_id,
             **kwargs
         )
 
     # noinspection PyUnusedLocal
-    def create_basic_client(self, client_class, tags=None, **kwargs):
+    def create_basic_client(self, client_class, **kwargs):
         credentials = msrestazure.azure_active_directory.ServicePrincipalCredentials(
             tenant=self.tenant_id,
             client_id=self.client_id,
@@ -131,7 +129,7 @@ class AksClient:
         return {
             # "kubernetesVersion": "",
             "dnsPrefix": config.dns_prefix,
-            "agentPoolProfiles": get_agent_profiles(config.pools),
+            "agentPoolProfiles": get_agent_profiles(config.agent_pools),
             "linuxProfile": get_linux_profile(self.public_key),
             "networkProfile": get_network_profile(),
 

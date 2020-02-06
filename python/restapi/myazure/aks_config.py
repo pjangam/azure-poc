@@ -11,9 +11,9 @@ class AksConfig:
         self.location = dictionary["location"]
         self.dns_prefix = dictionary["dns_prefix"]
 
-        self.pools = []
+        self.agent_pools = []
         for agent_pool_dict in dictionary["agent_pools"]:
-            self.pools.append(AgentPool(agent_pool_dict))
+            self.agent_pools.append(AgentPool(agent_pool_dict))
 
         # optional fields
         self.tags = None
@@ -27,6 +27,11 @@ class AgentPool:
 
         self.node_count = dictionary["node_count"]
         self.availability_zones = get_az(dictionary["node_count"])
+
+        # Optional parameters
+        self.profile_name = 'dfagentpool'
+        if 'profile_name' in dictionary:
+            self.profile_name = dictionary['profile_name']
         self.os_type = 'Linux'
         if "os" in dictionary:
             self.os_type = dictionary["os"]
