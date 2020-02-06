@@ -2,6 +2,8 @@ import os
 import azure.mgmt.containerservice
 import msrestazure.azure_active_directory
 
+from myazure.aks_config import AksConfig
+
 
 def get_env(env_name):
     val: str = os.environ.get(env_name)
@@ -37,42 +39,21 @@ def get_linux_profile(public_key):
     }
 
 
-def get_agent_profiles(node_count, vm_size, os_type, availability_zones):
-    return [
-        # todo:support multiple node pools with different config
-        {
+def get_agent_profiles(agent_pools):
+    result = []
+    for agent_pool in agent_pools:
+        result.append({
             "name": "dfagentpool",
-            "count": node_count,
-            "vmSize": vm_size,
-            "osType": os_type,
+            "count": agent_pool.node_count,
+            "vmSize": agent_pool.size,
+            "osType": agent_pool.os_type,
             "type": "VirtualMachineScaleSets",
-            "availabilityZones": availability_zones,
+            "availabilityZones": agent_pool.availability_zones,
             "enableNodePublicIP": False
-        }
-    ]
+        })
 
+    return result
 
-class AksConfig:
-    def __init__(self, dictionary):
-        self.resource_group = dictionary["resource_group"]
-        self.cluster_name = dictionary["cluster_name"]
-        self.location = dictionary["location"]
-        self.dns_prefix = dictionary["dns_prefix"]
-        self.node_count = dictionary["node_count"]
-        self.size = dictionary["size"]
-        # optional fields
-        self.os_type = 'Linux'
-        if "os" in dictionary:
-            self.os_type = dictionary["os"]
-        self.tags = None
-        if 'tags' in dictionary:
-            self.tags = dictionary['tags']
-
-
-def get_az(node_count):
-    last_num = min(3, node_count) + 1
-    availability_zones = list(map(lambda x: str(x), range(1, last_num)))
-    return availability_zones
 
 
 class AksClient:
@@ -140,19 +121,17 @@ class AksClient:
         return client
 
     def get_config(self, config: AksConfig):
-        availability_zones = get_az(config.node_count)
         return {
             "location": config.location,
             "tags": config.tags,
-            "properties": self.get_properties(config, availability_zones)
+            "properties": self.get_properties(config)
         }
 
-    def get_properties(self, config, availability_zones):
+    def get_properties(self, config):
         return {
             # "kubernetesVersion": "",
             "dnsPrefix": config.dns_prefix,
-            "agentPoolProfiles": get_agent_profiles(config.node_count, config.size, config.os_type,
-                                                    availability_zones),
+            "agentPoolProfiles": get_agent_profiles(config.pools),
             "linuxProfile": get_linux_profile(self.public_key),
             "networkProfile": get_network_profile(),
 

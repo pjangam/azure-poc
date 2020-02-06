@@ -1,7 +1,8 @@
 import unittest
 from unittest.mock import patch
 from pytest_dotenv import plugin
-from myazure.aks import AksClient, AksConfig
+from myazure.aks import AksClient
+from myazure.aks_config import AksConfig
 
 
 def get_mock_environment():
@@ -18,8 +19,12 @@ def get_request_config_dict():
         "cluster_name": "test-python-container-pj2",
         "location": "West US 2",
         "dns_prefix": "dnsPrefix",
-        "node_count": 2,
-        "size": "Standard_D2s_v3"
+        "agent_pools": [
+            {
+                "node_count": 2,
+                "size": "Standard_D2s_v3"
+            }
+        ]
     }
     return config
 
@@ -45,8 +50,9 @@ class TestStringMethods(unittest.TestCase):
         aks_config = AksConfig(config)
         self.assertEqual(config['resource_group'], aks_config.resource_group)
         for keys in config.keys():
-            self.assertTrue(hasattr(aks_config, keys), f'{keys} not present in object"')
-            self.assertEqual(getattr(aks_config, keys), config[keys])
+            if type(config[keys]) == 'str':
+                self.assertTrue(hasattr(aks_config, keys), f'{keys} not present in object"')
+                self.assertEqual(getattr(aks_config, keys), config[keys])
         for attr in dir(aks_config):
             if not attr.startswith('__') and attr != 'tags':
                 self.assertIsNotNone(getattr(aks_config, attr), f'{attr} is none but expected to have some value')

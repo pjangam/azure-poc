@@ -113,7 +113,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"location\": \"West US 2\",\n    \"dns_prefix\": \"dnsPrefix\",\n    \"node_count\": 2,\n    \"size\": \"Standard_D2s_v3\"\n}",
+							"raw": "{\n    \"location\": \"West US 2\",\n    \"dns_prefix\": \"dnsPrefix\",\n    \"agent_pools\": [\n        {\n            \"node_count\": 1,\n            \"size\": \"Standard_B2s\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -121,7 +121,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/clusters/firstapp-resources/test-python-container-pj2",
+							"raw": "http://localhost:5000/clusters/firstapp-resources/{{cluster_name}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -130,7 +130,47 @@
 							"path": [
 								"clusters",
 								"firstapp-resources",
-								"test-python-container-pj2"
+								"{{cluster_name}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.cluster_read",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/clusters/firstapp-resources/{{cluster_name}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"clusters",
+								"firstapp-resources",
+								"{{cluster_name}}"
 							]
 						}
 					},
@@ -158,7 +198,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5000/clusters/firstapp-resources/test-python-container-pj2",
+							"raw": "http://localhost:5000/clusters/firstapp-resources/{{cluster_name}}",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -167,7 +207,7 @@
 							"path": [
 								"clusters",
 								"firstapp-resources",
-								"test-python-container-pj2"
+								"{{cluster_name}}"
 							]
 						}
 					},
