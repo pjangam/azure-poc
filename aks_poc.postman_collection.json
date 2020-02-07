@@ -113,7 +113,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"location\": \"West US 2\",\n    \"dns_prefix\": \"dnsPrefix\",\n    \"agent_pools\": [\n        {\n            \"node_count\": 1,\n            \"size\": \"Standard_B2s\"\n        }\n    ]\n}",
+							"raw": "{\n    \"location\": \"West US 2\",\n    \"dns_prefix\": \"dnsPrefix\",\n    \"agent_pools\": [\n        {\n        \t\"profile_name\":\"p1\",\n            \"node_count\": 1,\n            \"size\": \"Standard_B2s\"\n        },\n        {\n        \t\"profile_name\":\"p2\",\n            \"node_count\": 1,\n            \"size\": \"Standard_B2s\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
