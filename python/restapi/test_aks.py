@@ -109,8 +109,7 @@ class TestStringMethods(unittest.TestCase):
 
         mock_aks_client.return_value \
             .managed_clusters \
-            .delete.return_value \
-            .result.return_value = to_obj({"provisioning_state": "Succeeded"})
+            .get.return_value = to_obj({"provisioning_state": "Succeeded", "name": "cluster_name"})
         aks_config = get_request_config()
         aks_client = AksClient()
         # When
@@ -118,7 +117,7 @@ class TestStringMethods(unittest.TestCase):
         status = aks_client.get('rg_name', 'cluster_name')
         # Then
 
-        self.assertEqual("Succeeded", status)
+        self.assertEqual("cluster_name", status)
 
     # def test_e2e(self):
     #     plugin.load_dotenv()
