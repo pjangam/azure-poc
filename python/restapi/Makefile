@@ -28,3 +28,8 @@ clean:
 .PHONY: test
 test:
 	nosetests --with-mocha-reporter
+
+.PHONY: e2etest
+e2etest: run
+	newman run aks_poc.postman_collection.json --folder infra_apis --enviornment aks_poc.postman_environment.json
+
