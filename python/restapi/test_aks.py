@@ -119,6 +119,46 @@ class TestStringMethods(unittest.TestCase):
 
         self.assertEqual("cluster_name", status)
 
+    @patch('azure.mgmt.containerservice.ContainerServiceClient')
+    @patch('msrestazure.azure_active_directory.ServicePrincipalCredentials')
+    def test_given_Aks_Update_Returns_Success_when_User_Call_Update_then_Status_Success_Returned(
+            self, mock_service_principle, mock_aks_client
+    ):
+        print(mock_service_principle)
+        # Given
+
+        mock_aks_client.return_value \
+            .managed_clusters \
+            .create_or_update.return_value \
+            .result.return_value = to_obj({"provisioning_state": "Succeeded"})
+        aks_config = get_request_config()
+        aks_client = AksClient()
+        # When
+
+        status = aks_client.create(aks_config)
+        # Then
+
+        self.assertEqual("Succeeded", status)
+
+    @patch('azure.mgmt.containerservice.ContainerServiceClient')
+    @patch('msrestazure.azure_active_directory.ServicePrincipalCredentials')
+    def test_given_Aks_Cluster_does_not_exist_when_User_Call_Update_then_Status_Failed_Returned(
+            self, mock_service_principle, mock_aks_client
+    ):
+        # Given
+        mock_aks_client.return_value \
+            .managed_clusters \
+            .get.return_value \
+            .result.return_value = to_obj({"provisioning_state": "Succeeded"})
+        aks_config = get_request_config()
+        aks_client = AksClient()
+        # When
+
+        status = aks_client.create(aks_config)
+        # Then
+
+        self.assertEqual("Succeeded", status)
+
     # def test_e2e(self):
     #     plugin.load_dotenv()
     #     client = AksClient()

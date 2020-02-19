@@ -6,3 +6,5 @@ azure
 nose
 nose-mocha-reporter
 pytest_dotenv
+pytest
+pytest-mocha

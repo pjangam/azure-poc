@@ -1,6 +1,7 @@
 import os
 import azure.mgmt.containerservice
 import msrestazure.azure_active_directory
+from msrestazure.azure_exceptions import CloudError
 
 from myazure.aks_config import AksConfig
 
@@ -96,6 +97,22 @@ class AksClient:
             return cluster.name
         else:
             return "Failed"
+
+    def update(self, config: AksConfig):
+        # make sure cluster exists
+
+        config_azure_format = self.__get_config(config)
+
+        async_create = self.cs_client.managed_clusters.update(
+            config.resource_group,
+            config.cluster_name,
+            config_azure_format
+        )
+        # wait for creation succeed
+        # TODO: try to get polling status to console/ response
+        container = async_create.result()
+        return container.provisioning_state
+        pass
 
     def delete(self, resource_group, cluster_name):
         async_action = self.cs_client.managed_clusters.delete(resource_group, cluster_name)

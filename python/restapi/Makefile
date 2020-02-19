@@ -17,7 +17,6 @@ env:
 
 .PHONY: run
 run: env
-run:
 	flask run
 
 .PHONY: clean
@@ -27,7 +26,14 @@ clean:
 
 .PHONY: test
 test:
-	nosetests --with-mocha-reporter
+	pytest --mocha
+
+.PHONY: coverage
+coverage:
+	rm -f .coverage
+	rm -rf htmlcov
+	coverage run -m pytest
+	coverage html
 
 .PHONY: e2etest
 e2etest: run

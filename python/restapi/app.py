@@ -46,5 +46,29 @@ def delete_cluster(resource_group, cluster_name):
 
 @app.route("/clusters/<resource_group>/<cluster_name>", methods=["GET"])
 def get_cluster(resource_group, cluster_name):
-    status = aksClient.get(resource_group, cluster_name)
+    try:
+        status = aksClient.get(resource_group, cluster_name)
+        return status
+
+    except CloudError as e:
+        if e.error.error == "ResourceNotFound":
+            return e.error.message, "404"
+        return e.error.message, "500"
+
+
+@app.route("/clusters/<resource_group>/<cluster_name>", methods=["PATCH"])
+def create_cluster(resource_group, cluster_name):
+    rid = uuid.uuid4()
+    logging.info(f"received {rid} create: {resource_group}/{cluster_name}")
+    try:
+        body = request.get_json()
+        body["resource_group"] = resource_group
+        body["cluster_name"] = cluster_name
+        aks_config = AksConfig(body)
+        status = aksClient.update(aks_config)
+    except CloudError as e:
+        return e.message, e.status_code
+
+    logging.info(f"complete {rid} create: {resource_group}/{cluster_name}")
+
     return status
