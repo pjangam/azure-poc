@@ -66,3 +66,9 @@ TODO:
 - [ ] Automate .env file creation
 - [ ] create credentials at global level and create resource_group using them
 
+
+### Reference:
+
+https://docs.microsoft.com/en-us/python/api/azure-mgmt-containerservice/azure.mgmt.containerservice.containerserviceclient?view=azure-python#managed-clusters
+https://docs.microsoft.com/en-us/python/api/azure-mgmt-containerservice/azure.mgmt.containerservice.v2018_03_31.operations.managedclustersoperations?view=azure-python#methods
+
